@@ -1,4 +1,12 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: beed37ffafa1aed489a992d1efc14b55
+timeCreated: 1474140362
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName: {}
+=======
 guid: 935251685947d4e45bd4eaa41566f19f
 timeCreated: 1474139659
 licenseType: Free
@@ -24,6 +32,7 @@ ModelImporter:
     4300004: pSphere2
     7400000: Default Take
     9500000: //RootNode
+>>>>>>> c4bbe2b7b7d89f7ec8c435f3605de5301e316956
   materials:
     importMaterials: 1
     materialName: 0
