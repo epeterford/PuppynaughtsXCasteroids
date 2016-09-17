@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
     {
         dogScore.fillAmount = 1f;
         catScore.fillAmount = 1f;
-        timeLeft = 15;
+        timeLeft = 60;
 	}
 	
 	// Update is called once per frame

@@ -8,7 +8,7 @@ public class Asteroid : MonoBehaviour {
 	public float maxSpeed;
 	public float accelerationForce = 10f;
 	public float startSpeed;
-	public bool playerMounted;
+	public Testplayer.player playerMounted;
 
 	float scale;
 
@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour {
 		startSpeed = Random.Range (.2f, maxSpeed);
 
 		rb2D.AddTorque (Random.Range (-3, 3));
-		playerMounted = false;
+		playerMounted = Testplayer.player.NoPlayer;
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
@@ -54,7 +54,7 @@ public class Asteroid : MonoBehaviour {
 			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
 		}
 
-		if (playerMounted) {
+		if (playerMounted != Testplayer.player.NoPlayer) {
 			Move ();
 		}
 	}
