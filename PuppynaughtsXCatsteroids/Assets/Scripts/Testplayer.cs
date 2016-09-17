@@ -14,7 +14,7 @@ public class Testplayer : MonoBehaviour {
 	bool isBoosting;
 
 	public Rigidbody2D rb2D;
-    public GameObject currentAsteroid; 
+    public Asteroid currentAsteroid; 
 
 
 	// Use this for initialization
@@ -56,7 +56,7 @@ public class Testplayer : MonoBehaviour {
         }
         else
         {
-            rb2D.velocity = new Vector3(0,0,0);
+            rb2D.velocity = currentAsteroid.GetComponent<Rigidbody2D>().velocity; 
         }
 
 	}
@@ -101,11 +101,16 @@ public class Testplayer : MonoBehaviour {
     {
         isAttached = false;
         transform.parent = null;
+        currentAsteroid = null;
 
     }
 
     void Mine()
     {
-
+        if(currentAsteroid)
+        {
+            Asteroid asteroid = currentAsteroid;
+            asteroid.StartMining();
+        }
     }
 }
