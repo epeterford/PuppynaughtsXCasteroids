@@ -35,11 +35,8 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
-<<<<<<< HEAD
 		rb2D.AddTorque (Random.Range (-3, 3));
-=======
 		playerMounted = false;
->>>>>>> de8d231c51020de951d92351a2b7d5335de1c842
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 

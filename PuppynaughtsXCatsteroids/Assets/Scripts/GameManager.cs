@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
@@ -42,12 +43,13 @@ public class GameManager : MonoBehaviour {
 
     void UpdateRoundTime()
     {
+        //Subtract Time
         timeLeft -= Time.deltaTime;
         roundTimer.text = Mathf.Round(timeLeft).ToString();
 
         if(timeLeft<0)
         {
-            //GameOver();
+            GameOver();
         }
         else if ( timeLeft>10)
         {
@@ -58,5 +60,10 @@ public class GameManager : MonoBehaviour {
             roundTimer.text = timeLeft.ToString("F2");
         }
 
+    }
+
+    void GameOver()
+    {
+        SceneManager.LoadScene("GameOver");
     }
 }
