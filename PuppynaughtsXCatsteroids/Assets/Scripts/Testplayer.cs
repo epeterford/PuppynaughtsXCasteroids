@@ -7,12 +7,13 @@ public class Testplayer : MonoBehaviour {
 	float maxSpeed;
 	float speed;
 	float driftSpeed;
-    float attachSpeed;
+    public float attachSpeed;
+    public float currentSpeed; 
 
-    bool isAttached;
+    public bool isAttached;
 	bool isBoosting;
 
-	Rigidbody2D rb2D;
+	public Rigidbody2D rb2D;
 
 
 
@@ -22,7 +23,7 @@ public class Testplayer : MonoBehaviour {
 		maxSpeed = 3;
 		speed = 10;
 		driftSpeed = .2f;
-        attachSpeed = 1.5f;
+        attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 	
@@ -33,12 +34,23 @@ public class Testplayer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        Rotate();
+        if(!isAttached)
+        {
+            Rotate();
+        }
 	}
 
 	void FixedUpdate()
     {
-        Move();
+        if(!isAttached)
+        {
+            Move();
+        }
+        else
+        {
+            rb2D.velocity = new Vector3(0,0,0);
+        }
+
 	}
 
     void Move()
@@ -59,9 +71,10 @@ public class Testplayer : MonoBehaviour {
 
         transform.eulerAngles = keepRot;
 
-        Debug.Log (rb2D.velocity.magnitude);
+        currentSpeed = rb2D.velocity.magnitude;
+       // Debug.Log (rb2D.velocity.magnitude);
 
-        if (rb2D.velocity.magnitude > maxSpeed) 
+        if (currentSpeed > maxSpeed) 
         {
             rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
         }
@@ -69,6 +82,6 @@ public class Testplayer : MonoBehaviour {
 
     void Rotate()
     {
-        transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*180);
+        transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*-180);
     }
 }
