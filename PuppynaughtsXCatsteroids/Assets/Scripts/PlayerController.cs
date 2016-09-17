@@ -11,8 +11,10 @@ public class PlayerController : MonoBehaviour
 	int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
 	float camRayLength = 100f; 
 	private Vector3 startPos; 
-
+    public float accelerationForce = 10f;
+    public float rotationForce = 3f;
 	private float playerSpeed = .2f;
+    private float maxSpeed = 3f;
 	void Start()
 	{
 		startPos = transform.position;
@@ -29,7 +31,7 @@ public class PlayerController : MonoBehaviour
 	void Update()
 	{
 
-		Rotate();
+
 	}
 	void FixedUpdate()
 	{
@@ -39,7 +41,6 @@ public class PlayerController : MonoBehaviour
 
 		// Move the player around the scene.
 		Move ();
-
 
 		// Animate the player.
 		//Animating (h, v);
@@ -51,10 +52,13 @@ public class PlayerController : MonoBehaviour
 	}
 	void Move ()
 	{
-		Vector3 v3Force = playerSpeed * transform.up;
-		Debug.Log(v3Force);
-		playerRigidbody.AddForce(0, playerSpeed, 0, ForceMode.Impulse);
+        float acceleration = Input.GetAxis("Vertical");
+        playerRigidbody.AddForce(transform.up * acceleration * accelerationForce);
+        Rotate();
 
+        if (playerRigidbody.velocity.magnitude > maxSpeed) {
+            playerRigidbody.velocity = Vector2.ClampMagnitude (playerRigidbody.velocity, maxSpeed);
+        }
 		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
 	}
 
