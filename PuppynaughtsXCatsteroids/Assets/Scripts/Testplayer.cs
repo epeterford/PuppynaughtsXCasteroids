@@ -3,10 +3,13 @@ using System.Collections;
 
 public class Testplayer : MonoBehaviour {
 
+	float maxBoost;
 	float maxSpeed;
 	float speed;
 	float driftSpeed;
 	float maxSpinSpeed;
+
+	bool isBoosting;
 
 	Rigidbody2D rb2D;
 
@@ -16,7 +19,7 @@ public class Testplayer : MonoBehaviour {
 	void Start () {
 		maxSpeed = 3;
 		speed = 10;
-		driftSpeed = .5f;
+		driftSpeed = .2f;
 		maxSpinSpeed = 1;
 
 		rb2D = GetComponent<Rigidbody2D> ();
@@ -35,7 +38,7 @@ public class Testplayer : MonoBehaviour {
 			Vector3 easeVelocity = rb2D.velocity;
 			easeVelocity.y = rb2D.velocity.y;
 			easeVelocity.z = 0.0f;
-			easeVelocity.x *= .85f;
+			easeVelocity.x *= .7f;
 		}
 
 
