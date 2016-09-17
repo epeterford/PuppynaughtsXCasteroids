@@ -25,7 +25,7 @@ public class Testplayer : MonoBehaviour {
 		driftSpeed = 1f;
         attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
-		rb2D.angularDrag = 3;
+		rb2D.angularDrag = 2;
 	
         isBoosting = false;
         isAttached = false;
