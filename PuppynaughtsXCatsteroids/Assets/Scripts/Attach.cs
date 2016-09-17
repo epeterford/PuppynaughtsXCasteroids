@@ -37,7 +37,12 @@ public class Attach : MonoBehaviour {
     void AttachToAsteroid(Asteroid asteroid)
     {
         myPlayer.isAttached = true;
+		myPlayer.rb2D.mass += asteroid.rb2D.mass;
+		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
 		asteroid.transform.parent = myPlayer.transform;
+		asteroid.rb2D = null;
+		asteroid.attatchment = transform;
+		Destroy(asteroid.GetComponent<Rigidbody2D>());
         myPlayer.currentAsteroid = asteroid; 
 		asteroid.playerMounted = myPlayer.p;
     }

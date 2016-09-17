@@ -10,7 +10,7 @@ public class Testplayer : MonoBehaviour {
 	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
 	public player p;
 	float maxBoost;
-	float maxSpeed;
+	public float maxSpeed;
 	float speed;
 	float driftSpeed;
 	public float attachSpeed;
@@ -25,7 +25,10 @@ public class Testplayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () 
-	{
+    {
+		maxSpeed = 6;
+		speed = 15;
+
 		Debug.Log (p.ToString());
 		maxSpeed = 6;
 		speed = 10;
@@ -58,22 +61,45 @@ public class Testplayer : MonoBehaviour {
 		}
 		string whichMine = playerMine[p];
 		float mine = Input.GetAxis (whichMine);
-		if(Input.GetButtonDown(mine) && isAttached)
+		if(mine != 0 && isAttached)
 		{
 			Mine();
 		}
 	}
 
 	void FixedUpdate()
-	{
-		if(!isAttached)
-		{
+    {
+        if(!isAttached)
+        {
+            Move();
+        }
+        else
+        {
+			maxSpeed = 4 - currentAsteroid.currentScale/2;
 			Move();
-		}
-		else
-		{
-			rb2D.velocity = currentAsteroid.GetComponent<Rigidbody2D>().velocity; 
-		}
+        }
+
+	}	
+
+    void Mine()
+    {
+        if(currentAsteroid)
+        {
+            Asteroid asteroid = currentAsteroid;
+            asteroid.StartMining(this);
+        }
+    }
+
+	void Detach(){
+		Revert ();
+		currentAsteroid.Detach ();
+	}
+
+	public void Revert(){
+		maxSpeed = 6;
+		rb2D.mass = 1;
+		isAttached = false;
+		currentAsteroid = null;
 
 	}
 
@@ -121,20 +147,5 @@ public class Testplayer : MonoBehaviour {
 		transform.Rotate(0,0,horizontalAxis*Time.deltaTime*-180);
 	}
 
-	void Detach()
-	{
-		isAttached = false;
-		transform.parent = null;
-		currentAsteroid = null;
 
-	}
-
-	void Mine()
-	{
-		if(currentAsteroid)
-		{
-			Asteroid asteroid = currentAsteroid;
-			asteroid.StartMining(this);
-		}
-	}
 }
