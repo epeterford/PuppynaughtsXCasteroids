@@ -6,6 +6,7 @@ public class Testplayer : MonoBehaviour {
 	float maxSpeed;
 	float speed;
 	float driftSpeed;
+	float maxSpinSpeed;
 
 	Rigidbody2D rb2D;
 
@@ -13,11 +14,13 @@ public class Testplayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		maxSpeed = 5;
-		speed = 3;
+		maxSpeed = 3;
+		speed = 10;
 		driftSpeed = .5f;
+		maxSpinSpeed = 1;
 
 		rb2D = GetComponent<Rigidbody2D> ();
+		rb2D.angularDrag = 3;
 	
 	}
 	
@@ -35,10 +38,11 @@ public class Testplayer : MonoBehaviour {
 			easeVelocity.x *= .85f;
 		}
 
+
 		Vector3 keepRot = transform.eulerAngles;
 
 		Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-		rb2D.AddForceAtPosition(transform.up*Input.GetAxis("Vertical")*speed, new Vector2(transform.localPosition.x,transform.localPosition.y-transform.localScale.y/2)); 
+		rb2D.AddForce(transform.up*Input.GetAxis("Vertical")*speed); 
 
 		transform.eulerAngles = keepRot;
 
