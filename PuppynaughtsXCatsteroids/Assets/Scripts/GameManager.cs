@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     public Image catScore; 
     public Text roundTimer; 
     public float timeLeft; 
+    public GameObject scoreUI;
 	// Use this for initialization
 	void Start () 
     {
@@ -64,6 +65,14 @@ public class GameManager : MonoBehaviour {
 
     void GameOver()
     {
-        SceneManager.LoadScene("GameOver");
+        //SceneManager.LoadScene("GameOver");
+    }
+
+    public void SpawnPointsUI(Vector3 pos)
+    {
+        /*Vector3 scorePos = Camera.main.WorldToScreenPoint(pos);
+        scorePos.x = scorePos.x / Screen.width;
+        scorePos.y = scorePos.y / Screen.height;
+        Instantiate(scoreUI, scorePos, Quaternion.identity);*/
     }
 }
