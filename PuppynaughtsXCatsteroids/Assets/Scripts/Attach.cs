@@ -38,14 +38,7 @@ public class Attach : MonoBehaviour {
     {
         myPlayer.isAttached = true;
         myPlayer.transform.parent = asteroid.transform;
-        myPlayer.currentAsteroid = asteroid.gameObject; 
-
-        if(myPlayer.currentAsteroid)
-        {
-            Debug.Log(myPlayer.name + " on " + myPlayer.currentAsteroid.name);
-            asteroid.StartMining();
-        }
-
+        myPlayer.currentAsteroid = asteroid; 
 
     }
 }

@@ -3,16 +3,8 @@ using System.Collections;
 
 public class Asteroid : MonoBehaviour {
 
-<<<<<<< HEAD
     float mineTime = 5; 
     Testplayer myPlayer; 
-   
-	// Use this for initialization
-	void Start () 
-    {
-        myPlayer = FindObjectOfType<Testplayer>();
-       // StartMining(); 
-=======
 	public float maxSpeed;
 	public float startSpeed;
 
@@ -23,7 +15,9 @@ public class Asteroid : MonoBehaviour {
 	Rigidbody2D rb2D;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
+        myPlayer = FindObjectOfType<Testplayer>();
 		scale = Random.Range (.1f, 2);
 		transform.localScale = new Vector3(scale,scale,scale);
 
@@ -41,6 +35,13 @@ public class Asteroid : MonoBehaviour {
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
+<<<<<<< HEAD
+		if(rb2D.velocity.magnitude > maxSpeed)
+        {
+			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
+        }
+    }
+=======
 
 <<<<<<< HEAD
 =======
@@ -51,6 +52,7 @@ public class Asteroid : MonoBehaviour {
 >>>>>>> ccebb59211645ffb64dcedb75c13f3986ade0a1e
 	}
 	
+>>>>>>> 14337314a4d3b516abae1b6adc400db30127db29
 	// Update is called once per frame
 	void Update () 
     {
@@ -78,6 +80,7 @@ public class Asteroid : MonoBehaviour {
         Debug.Log("WaitAndPrint " + Time.time);
         myPlayer.isAttached = false;
         myPlayer.transform.parent = null;
+        myPlayer.currentAsteroid = null;
         Destroy(this.gameObject);
 
     }

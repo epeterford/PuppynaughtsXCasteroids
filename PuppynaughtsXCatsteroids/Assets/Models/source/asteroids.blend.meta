@@ -1,10 +1,67 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 100e2d2607752451bb27682ea1f75edf
+timeCreated: 1474139644
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: asteroid
+    100002: asteroid_MeshPart0
+    100004: asteroid_MeshPart1
+    100006: asteroid_MeshPart2
+    100008: asteroid_MeshPart3
+    100010: asteroidBaked
+    100012: asteroidBaked_MeshPart0
+    100014: asteroidBaked_MeshPart1
+    100016: asteroidBaked_MeshPart2
+    100018: asteroidBaked_MeshPart3
+    100020: //RootNode
+    400000: asteroid
+    400002: asteroid_MeshPart0
+    400004: asteroid_MeshPart1
+    400006: asteroid_MeshPart2
+    400008: asteroid_MeshPart3
+    400010: asteroidBaked
+    400012: asteroidBaked_MeshPart0
+    400014: asteroidBaked_MeshPart1
+    400016: asteroidBaked_MeshPart2
+    400018: asteroidBaked_MeshPart3
+    400020: //RootNode
+    2300000: asteroid_MeshPart0
+    2300002: asteroid_MeshPart1
+    2300004: asteroid_MeshPart2
+    2300006: asteroid_MeshPart3
+    2300008: asteroidBaked_MeshPart0
+    2300010: asteroidBaked_MeshPart1
+    2300012: asteroidBaked_MeshPart2
+    2300014: asteroidBaked_MeshPart3
+    3300000: asteroid_MeshPart0
+    3300002: asteroid_MeshPart1
+    3300004: asteroid_MeshPart2
+    3300006: asteroid_MeshPart3
+    3300008: asteroidBaked_MeshPart0
+    3300010: asteroidBaked_MeshPart1
+    3300012: asteroidBaked_MeshPart2
+    3300014: asteroidBaked_MeshPart3
+    4300000: asteroidBaked_MeshPart0
+    4300002: asteroidBaked_MeshPart1
+    4300004: asteroidBaked_MeshPart2
+    4300006: asteroidBaked_MeshPart3
+    4300008: asteroid_MeshPart0
+    4300010: asteroid_MeshPart1
+    4300012: asteroid_MeshPart2
+    4300014: asteroid_MeshPart3
+    7400000: Default Take
+    9500000: //RootNode
+=======
 guid: 33d6c35e658cb874994af4014b06d31d
 timeCreated: 1474134711
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName: {}
+>>>>>>> 14337314a4d3b516abae1b6adc400db30127db29
   materials:
     importMaterials: 1
     materialName: 0
