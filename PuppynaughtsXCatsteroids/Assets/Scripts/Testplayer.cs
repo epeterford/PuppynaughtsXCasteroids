@@ -14,7 +14,7 @@ public class Testplayer : MonoBehaviour {
 	bool isBoosting;
 
 	public Rigidbody2D rb2D;
-
+    public Asteroid currentAsteroid; 
 
 
 	// Use this for initialization
@@ -22,7 +22,7 @@ public class Testplayer : MonoBehaviour {
     {
 		maxSpeed = 3;
 		speed = 10;
-		driftSpeed = .2f;
+		driftSpeed = 1f;
         attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
@@ -38,6 +38,14 @@ public class Testplayer : MonoBehaviour {
         {
             Rotate();
         }
+        if(Input.GetButtonDown("Detach") && isAttached)
+        {
+            Detach();
+        }
+        if(Input.GetButtonDown("Mine") && isAttached)
+        {
+            Mine();
+        }
 	}
 
 	void FixedUpdate()
@@ -48,7 +56,7 @@ public class Testplayer : MonoBehaviour {
         }
         else
         {
-            rb2D.velocity = new Vector3(0,0,0);
+            rb2D.velocity = currentAsteroid.GetComponent<Rigidbody2D>().velocity; 
         }
 
 	}
@@ -58,30 +66,51 @@ public class Testplayer : MonoBehaviour {
         //Friction
         if (rb2D.velocity.magnitude > driftSpeed) {
             Vector3 easeVelocity = rb2D.velocity;
-            easeVelocity.y = rb2D.velocity.y;
+            easeVelocity.y *= .99f;
             easeVelocity.z = 0.0f;
-            easeVelocity.x *= .7f;
+            easeVelocity.x *= .99f;
+            rb2D.velocity = easeVelocity; 
         }
 
 
         Vector3 keepRot = transform.eulerAngles;
 
         Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        rb2D.AddForce(transform.up*Input.GetAxis("Vertical")*speed); 
 
         transform.eulerAngles = keepRot;
 
         currentSpeed = rb2D.velocity.magnitude;
-       // Debug.Log (rb2D.velocity.magnitude);
-
-        if (currentSpeed > maxSpeed) 
+        if (currentSpeed > maxSpeed && Input.GetAxis("Vertical") !=0)
         {
+            Debug.Log("Clamping");
             rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+        }
+        else
+        {
+            rb2D.AddForce(transform.up*Input.GetAxis("Vertical")*speed);
+
         }
     }
 
     void Rotate()
     {
         transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*-180);
+    }
+
+    void Detach()
+    {
+        isAttached = false;
+        transform.parent = null;
+        currentAsteroid = null;
+
+    }
+
+    void Mine()
+    {
+        if(currentAsteroid)
+        {
+            Asteroid asteroid = currentAsteroid;
+            asteroid.StartMining();
+        }
     }
 }
