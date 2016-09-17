@@ -39,6 +39,6 @@ public class Attach : MonoBehaviour {
         myPlayer.isAttached = true;
         myPlayer.transform.parent = asteroid.transform;
         myPlayer.currentAsteroid = asteroid; 
-
+		asteroid.playerMounted = true;
     }
 }

@@ -6,7 +6,9 @@ public class Asteroid : MonoBehaviour {
     float mineTime = 5; 
     Testplayer myPlayer; 
 	public float maxSpeed;
+	public float accelerationForce = 10f;
 	public float startSpeed;
+	public bool playerMounted;
 
 	float scale;
 
@@ -33,6 +35,8 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
+		playerMounted = false;
+
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
     }
@@ -48,6 +52,23 @@ public class Asteroid : MonoBehaviour {
 		if(rb2D.velocity.magnitude > maxSpeed){
 			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
 		}
+
+		if (playerMounted) {
+			Move ();
+		}
+	}
+	void Move() {
+		float acceleration = Input.GetAxis("Vertical");
+		rb2D.AddForce(transform.up * acceleration * accelerationForce);
+		Rotate();
+
+		if (rb2D.velocity.magnitude > maxSpeed) {
+			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+		}
+		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
+	}
+	void Rotate()	{
+		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
     public void StartMining()
     {
