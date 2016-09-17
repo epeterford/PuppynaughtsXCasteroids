@@ -38,6 +38,10 @@ public class Testplayer : MonoBehaviour {
         {
             Rotate();
         }
+        if(Input.GetButtonDown("Detach") && isAttached)
+        {
+            Detach();
+        }
 	}
 
 	void FixedUpdate()
@@ -83,5 +87,12 @@ public class Testplayer : MonoBehaviour {
     void Rotate()
     {
         transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*-180);
+    }
+
+    void Detach()
+    {
+        isAttached = false;
+        transform.parent = null;
+
     }
 }
