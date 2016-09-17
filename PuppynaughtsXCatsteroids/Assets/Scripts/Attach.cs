@@ -37,8 +37,8 @@ public class Attach : MonoBehaviour {
     void AttachToAsteroid(Asteroid asteroid)
     {
         myPlayer.isAttached = true;
-        myPlayer.transform.parent = asteroid.transform;
+		asteroid.transform.parent = myPlayer.transform;
         myPlayer.currentAsteroid = asteroid; 
-
+		asteroid.playerMounted = true;
     }
 }
