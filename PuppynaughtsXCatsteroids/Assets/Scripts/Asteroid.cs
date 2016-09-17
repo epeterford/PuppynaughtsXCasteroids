@@ -4,24 +4,34 @@ using System.Collections;
 public class Asteroid : MonoBehaviour {
 
     float mineTime = 0; 
-    Testplayer myPlayer; 
+    public Testplayer myPlayer; 
 	public float maxSpeed;
 	public float accelerationForce = 10f;
 	public float startSpeed;
 	public bool playerMounted;
 
+	public AsteroidSpawner mom;
+
 	float scale;
+	public float currentScale;
 
 	public float points;
 
-	Rigidbody2D rb2D;
+	public Rigidbody2D rb2D;
+
+	public bool isMining;
+
+	public Transform attatchment;
+
 
 	// Use this for initialization
 	void Start () 
     {
         myPlayer = FindObjectOfType<Testplayer>();
 		scale = Random.Range (.3f, 5);
+		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
+		isMining = false;
 
 		rb2D = GetComponent<Rigidbody2D>();
 
@@ -35,11 +45,9 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
-<<<<<<< HEAD
 		rb2D.AddTorque (Random.Range (-3, 3));
-=======
+
 		playerMounted = false;
->>>>>>> de8d231c51020de951d92351a2b7d5335de1c842
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
@@ -47,21 +55,25 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        if(rb2D.velocity.magnitude > maxSpeed)
-        {
-            rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
-        }
+		if (!playerMounted) {
+			if (rb2D.velocity.magnitude > maxSpeed) {
+				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+			}
+				
+		}
 	}
 	void FixedUpdate(){
-		if(rb2D.velocity.magnitude > maxSpeed){
-			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
-		}
+		if (!playerMounted) {
+			if (rb2D.velocity.magnitude > maxSpeed) {
+				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+			}
 
-		if (playerMounted) {
-			Move ();
+			if (playerMounted) {
+				//Move ();
+			}
 		}
 	}
-	void Move() {
+	/*void Move() {
 		float acceleration = Input.GetAxis("Vertical");
 		rb2D.AddForce(transform.up * acceleration * accelerationForce);
 		Rotate();
@@ -70,7 +82,7 @@ public class Asteroid : MonoBehaviour {
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 		}
 		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
-	}
+	}*/
 	void Rotate()	{
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
@@ -79,22 +91,36 @@ public class Asteroid : MonoBehaviour {
         Debug.Log("Starting " + Time.time);
 		StartCoroutine("MineAndDestroy");
         Debug.Log("Before Mining finishes " + Time.time);
-    }
+    
+	}
+		
 
     IEnumerator MineAndDestroy()
     {
+		isMining = true;
 		Vector3 startScale = transform.localScale;
 		float lastScale = scale;
+		Transform mp = myPlayer.transform;
 		while (mineTime < scale*1.5f) {
 			mineTime += Time.deltaTime;
-			transform.localScale = Vector3.Lerp (startScale, new Vector3 (.5f, .5f, .5f), mineTime/(scale*1.5f));
-			transform.position = Vector2.MoveTowards (transform.position, myPlayer.transform.position, lastScale - transform.localScale.x);
-			lastScale = transform.localScale.x;
+			transform.localScale = Vector3.Lerp (startScale, new Vector3 (.1f, .1f, .1f), mineTime/(scale*1.5f));
+			currentScale = transform.localScale.x;
+			transform.position = Vector2.MoveTowards (transform.position, mp.position-mp.up*(currentScale/2), lastScale - currentScale);
+			lastScale = currentScale;
 			yield return null;
 		}
-        myPlayer.isAttached = false;
-        myPlayer.currentAsteroid = null;
+		myPlayer.Revert();
+		mom.currentNum--;
         Destroy(this.gameObject);
 
     }
+
+	public void Detatch(){
+		isMining = false;
+		playerMounted = false;
+		myPlayer = null;
+		gameObject.AddComponent<Rigidbody2D> ();
+		rb2D = GetComponent<Rigidbody2D> ();
+		rb2D.mass = currentScale;
+	}
 }

@@ -4,7 +4,7 @@ using System.Collections;
 public class Testplayer : MonoBehaviour {
 
 	float maxBoost;
-	float maxSpeed;
+	public float maxSpeed;
 	float speed;
 	float driftSpeed;
     public float attachSpeed;
@@ -20,8 +20,8 @@ public class Testplayer : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-		maxSpeed = 3;
-		speed = 10;
+		maxSpeed = 6;
+		speed = 15;
 		driftSpeed = 1f;
         attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
@@ -34,17 +34,21 @@ public class Testplayer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        if(!isAttached)
-        {
-            Rotate();
-        }
+		if (!isAttached) {
+			Rotate ();
+		} else {
+			//RotatewithCargo ();
+			Rotate();
+		}
         if(Input.GetButtonDown("Detach") && isAttached)
         {
-            Detach();
+            Detatch();
         }
         if(Input.GetButtonDown("Mine") && isAttached)
         {
-            Mine();
+			if (!currentAsteroid.isMining) {
+				Mine ();
+			}
         }
 	}
 
@@ -56,7 +60,8 @@ public class Testplayer : MonoBehaviour {
         }
         else
         {
-            rb2D.velocity = currentAsteroid.GetComponent<Rigidbody2D>().velocity; 
+			maxSpeed = 4 - currentAsteroid.currentScale/2;
+			Move();
         }
 
 	}
@@ -92,18 +97,15 @@ public class Testplayer : MonoBehaviour {
         }
     }
 
+	void RotatewithCargo(){
+		transform.RotateAround (transform.position,new Vector3(0,0,currentAsteroid.transform.position.z),Input.GetAxis("Horizontal")*Time.deltaTime*-180);
+	}
+
     void Rotate()
     {
         transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*-180);
     }
-
-    void Detach()
-    {
-        isAttached = false;
-        transform.parent = null;
-        currentAsteroid = null;
-
-    }
+		
 
     void Mine()
     {
@@ -113,4 +115,17 @@ public class Testplayer : MonoBehaviour {
             asteroid.StartMining();
         }
     }
+
+	void Detatch(){
+		Revert ();
+		currentAsteroid.Detatch ();
+	}
+
+	public void Revert(){
+		maxSpeed = 6;
+		rb2D.mass = 1;
+		isAttached = false;
+		currentAsteroid = null;
+
+	}
 }
