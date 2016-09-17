@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 100e2d2607752451bb27682ea1f75edf
 timeCreated: 1474139644
 licenseType: Free
@@ -53,6 +54,14 @@ ModelImporter:
     4300014: asteroid_MeshPart3
     7400000: Default Take
     9500000: //RootNode
+=======
+guid: 33d6c35e658cb874994af4014b06d31d
+timeCreated: 1474134711
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName: {}
+>>>>>>> 14337314a4d3b516abae1b6adc400db30127db29
   materials:
     importMaterials: 1
     materialName: 0
