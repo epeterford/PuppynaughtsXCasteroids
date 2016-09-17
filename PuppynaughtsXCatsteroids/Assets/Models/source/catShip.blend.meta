@@ -7,10 +7,12 @@ ModelImporter:
     100002: pSphere2
     100004: pSphere2_001
     100006: pSphere2_002
+    100008: displacementControl
     400000: //RootNode
     400002: pSphere2
     400004: pSphere2_001
     400006: pSphere2_002
+    400008: displacementControl
     2300000: pSphere2
     2300002: pSphere2_001
     2300004: pSphere2_002
