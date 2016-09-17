@@ -27,17 +27,25 @@ public class Attach : MonoBehaviour {
         {
             if(myPlayer.currentSpeed < myPlayer.attachSpeed)
             {
-                myPlayer.isAttached = true;
-                myPlayer.transform.parent = other.transform;
-                myPlayer.currentAsteroid = other.gameObject; 
-
-                if(myPlayer.currentAsteroid)
-                {
-                    Debug.Log(myPlayer.name + " on " + myPlayer.currentAsteroid.name);
-                }
-               
+                AttachToAsteroid(other.GetComponent<Asteroid>());
+ 
             }
         }
+
+    }
+
+    void AttachToAsteroid(Asteroid asteroid)
+    {
+        myPlayer.isAttached = true;
+        myPlayer.transform.parent = asteroid.transform;
+        myPlayer.currentAsteroid = asteroid.gameObject; 
+
+        if(myPlayer.currentAsteroid)
+        {
+            Debug.Log(myPlayer.name + " on " + myPlayer.currentAsteroid.name);
+            asteroid.StartMining();
+        }
+
 
     }
 }
