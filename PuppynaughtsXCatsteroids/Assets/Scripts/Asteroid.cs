@@ -35,38 +35,20 @@ public class Asteroid : MonoBehaviour {
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
-<<<<<<< HEAD
-		if(rb2D.velocity.magnitude > maxSpeed)
-        {
-			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
-        }
     }
-=======
-
-<<<<<<< HEAD
-=======
-		if(rb2D.velocity.magnitude > maxSpeed){
-			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
-		}
->>>>>>> fbd04dec550843a228ecfc7688601b576e180557
->>>>>>> ccebb59211645ffb64dcedb75c13f3986ade0a1e
-	}
-	
->>>>>>> 14337314a4d3b516abae1b6adc400db30127db29
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if(rb2D.velocity.magnitude > maxSpeed)
+        {
+            rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
+        }
 	}
-
-<<<<<<< HEAD
 	void FixedUpdate(){
 		if(rb2D.velocity.magnitude > maxSpeed){
 			rb2D.velocity = Vector2.ClampMagnitude(rb2D.velocity, maxSpeed);
 		}
 	}
-		
-=======
     public void StartMining()
     {
         Debug.Log("Starting " + Time.time);
@@ -84,5 +66,4 @@ public class Asteroid : MonoBehaviour {
         Destroy(this.gameObject);
 
     }
->>>>>>> ccebb59211645ffb64dcedb75c13f3986ade0a1e
 }
