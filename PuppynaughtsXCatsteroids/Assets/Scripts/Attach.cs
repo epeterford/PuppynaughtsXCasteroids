@@ -25,17 +25,17 @@ public class Attach : MonoBehaviour {
     {
         if(other.tag=="Asteroid")
         {
-            if(myPlayer)
+            if(myPlayer.currentSpeed < myPlayer.attachSpeed)
             {
-                if(myPlayer.currentSpeed < myPlayer.attachSpeed)
+                myPlayer.isAttached = true;
+                myPlayer.transform.parent = other.transform;
+                myPlayer.currentAsteroid = other.gameObject; 
+
+                if(myPlayer.currentAsteroid)
                 {
-                    myPlayer.isAttached = true;
-                    myPlayer.transform.parent = other.transform;
+                    Debug.Log(myPlayer.name + " on " + myPlayer.currentAsteroid.name);
                 }
-            }
-            else
-            {
-                Debug.Log("No Player!");
+               
             }
         }
 

@@ -14,7 +14,7 @@ public class Testplayer : MonoBehaviour {
 	bool isBoosting;
 
 	public Rigidbody2D rb2D;
-
+    public GameObject currentAsteroid; 
 
 
 	// Use this for initialization
@@ -41,6 +41,10 @@ public class Testplayer : MonoBehaviour {
         if(Input.GetButtonDown("Detach") && isAttached)
         {
             Detach();
+        }
+        if(Input.GetButtonDown("Mine") && isAttached)
+        {
+            Mine();
         }
 	}
 
@@ -93,6 +97,11 @@ public class Testplayer : MonoBehaviour {
     {
         isAttached = false;
         transform.parent = null;
+
+    }
+
+    void Mine()
+    {
 
     }
 }
