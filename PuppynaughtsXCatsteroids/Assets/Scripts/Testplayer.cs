@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Testplayer : MonoBehaviour {
 
 	public enum player {Player1 = 0, Player2 = 1};
-	public Dictionary<string, string> playerHorizonalControls = new Dictionary<string, string>();
+	public Dictionary<string, string> playerHorizontalControls = new Dictionary<string, string>();
 	public Dictionary<string, string> playerVerticalControls = new Dictionary<string, string>();
 	public player p;
 	float maxBoost;
@@ -33,8 +33,8 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		playerHorizonalControls.Add ("Player1", "P1 Horizontal");
-		playerHorizonalControls.Add ("Player2", "P2 Horizontal");
+		playerHorizontalControls.Add ("Player1", "P1 Horizontal");
+		playerHorizontalControls.Add ("Player2", "P2 Horizontal");
 		playerVerticalControls.Add ("Player1", "P1 Vertical");
 		playerVerticalControls.Add ("Player2", "P2 Vertical");
 
@@ -95,7 +95,6 @@ public class Testplayer : MonoBehaviour {
 		// Vertical axis for this player
 		string whichVerticalAxis = playerVerticalControls[p.ToString()];
 		float verticalAxis = Input.GetAxis (whichVerticalAxis);
-		// Debug.Log (whichVerticalAxis.ToString () + " " + verticalAxis);
 
 		if (currentSpeed > maxSpeed && verticalAxis !=0)
 		{
@@ -111,7 +110,10 @@ public class Testplayer : MonoBehaviour {
 
 	void Rotate()
 	{
-		transform.Rotate(0,0,Input.GetAxis("Horizontal")*Time.deltaTime*-180);
+		// Horizontal axis for this player
+		string whichHorizontalAxis = playerHorizontalControls[p.ToString()];
+		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
+		transform.Rotate(0,0,horizontalAxis*Time.deltaTime*-180);
 	}
 
 	void Detach()
