@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 	float camRayLength = 100f; 
 	private Vector3 startPos; 
 
-	private float playerSpeed = 6;
+	private float playerSpeed = .2f;
 	void Start()
 	{
 		startPos = transform.position;
@@ -26,13 +26,16 @@ public class PlayerController : MonoBehaviour
 		anim = GetComponent <Animator> ();
 		playerRigidbody = GetComponent <Rigidbody> ();
 	}
+	void Update()
+	{
 
+		Rotate();
+	}
 	void FixedUpdate()
 	{
 		// Store the input axes.
 		float v = Input.GetAxisRaw ("Vertical");
 
-		Rotate(); 
 
 		// Move the player around the scene.
 		Move ();
@@ -48,17 +51,21 @@ public class PlayerController : MonoBehaviour
 	}
 	void Move ()
 	{
-		transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
+		Vector3 v3Force = playerSpeed * transform.up;
+		Debug.Log(v3Force);
+		playerRigidbody.AddForce(0, playerSpeed, 0, ForceMode.Impulse);
+
+		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
 	}
 
 
 	void Animating (float h, float v)
 	{
 		// Create a boolean that is true if either of the input axes is non-zero.
-		bool walking = h != 0f || v != 0f;
+		bool bMoving = h != 0f || v != 0f;
 
 		// Tell the animator whether or not the player is walking.
-		anim.SetBool ("IsWalking", walking);
+		anim.SetBool ("IsMoving", bMoving);
 	}
 		
 
