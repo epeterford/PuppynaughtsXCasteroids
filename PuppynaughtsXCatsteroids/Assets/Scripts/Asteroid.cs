@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Asteroid : MonoBehaviour {
 
-    float mineTime = 5; 
+    float mineTime = 0; 
     Testplayer myPlayer; 
 	public float maxSpeed;
 	public float accelerationForce = 10f;
@@ -20,7 +20,7 @@ public class Asteroid : MonoBehaviour {
 	void Start () 
     {
         myPlayer = FindObjectOfType<Testplayer>();
-		scale = Random.Range (.1f, 2);
+		scale = Random.Range (.3f, 5);
 		transform.localScale = new Vector3(scale,scale,scale);
 
 		rb2D = GetComponent<Rigidbody2D>();
@@ -29,12 +29,13 @@ public class Asteroid : MonoBehaviour {
 
 		points = 10*scale;
 
-		rb2D.angularDrag = 2;
+		rb2D.angularDrag = .05f;
 
 		maxSpeed = 2;
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
+		rb2D.AddTorque (Random.Range (-3, 3));
 		playerMounted = false;
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
@@ -73,16 +74,22 @@ public class Asteroid : MonoBehaviour {
     public void StartMining()
     {
         Debug.Log("Starting " + Time.time);
-        StartCoroutine(MineAndDestroy(mineTime));
+		StartCoroutine("MineAndDestroy");
         Debug.Log("Before Mining finishes " + Time.time);
     }
 
-    IEnumerator MineAndDestroy(float time)
+    IEnumerator MineAndDestroy()
     {
-        yield return new WaitForSeconds(time);
-        Debug.Log("WaitAndPrint " + Time.time);
+		Vector3 startScale = transform.localScale;
+		float lastScale = scale;
+		while (mineTime < scale*1.5f) {
+			mineTime += Time.deltaTime;
+			transform.localScale = Vector3.Lerp (startScale, new Vector3 (.5f, .5f, .5f), mineTime/(scale*1.5f));
+			transform.position = Vector2.MoveTowards (transform.position, myPlayer.transform.position, lastScale - transform.localScale.x);
+			lastScale = transform.localScale.x;
+			yield return null;
+		}
         myPlayer.isAttached = false;
-        myPlayer.transform.parent = null;
         myPlayer.currentAsteroid = null;
         Destroy(this.gameObject);
 
