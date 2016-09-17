@@ -7,6 +7,7 @@ public class Testplayer : MonoBehaviour {
 	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2};
 	public Dictionary<player, string> playerHorizontalControls = new Dictionary<player, string>();
 	public Dictionary<player, string> playerVerticalControls = new Dictionary<player, string>();
+	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
 	public player p;
 	float maxBoost;
 	float maxSpeed;
@@ -37,6 +38,8 @@ public class Testplayer : MonoBehaviour {
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
 		playerVerticalControls.Add (player.Player2, "P2 Vertical");
+		playerMine.Add (player.Player1, "P1 Mine");
+		playerMine.Add (player.Player2, "P2 Mine");
 
 		isBoosting = false;
 		isAttached = false;
@@ -53,7 +56,9 @@ public class Testplayer : MonoBehaviour {
 		{
 			Detach();
 		}
-		if(Input.GetButtonDown("Mine") && isAttached)
+		string whichMine = playerMine[p];
+		float mine = Input.GetAxis (whichMine);
+		if(Input.GetButtonDown(mine) && isAttached)
 		{
 			Mine();
 		}
@@ -129,7 +134,7 @@ public class Testplayer : MonoBehaviour {
 		if(currentAsteroid)
 		{
 			Asteroid asteroid = currentAsteroid;
-			asteroid.StartMining();
+			asteroid.StartMining(this);
 		}
 	}
 }

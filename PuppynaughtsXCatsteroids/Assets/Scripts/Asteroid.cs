@@ -71,10 +71,11 @@ public class Asteroid : MonoBehaviour {
 	void Rotate()	{
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
-    public void StartMining()
+	public void StartMining(Testplayer player)
     {
         Debug.Log("Starting " + Time.time);
 		StartCoroutine("MineAndDestroy");
+		playerMounted = player;
         Debug.Log("Before Mining finishes " + Time.time);
     }
 
