@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:PuppynaughtsXCatsteroids/Assets/Models/Materials.meta
+guid: e775c51ee8a761d4c85b0d48087faa2d
+folderAsset: yes
+timeCreated: 1474139614
+=======
 guid: a076db3e9b4661e4c81f3ca64e2ba590
 folderAsset: yes
 timeCreated: 1474134711
+>>>>>>> c4bbe2b7b7d89f7ec8c435f3605de5301e316956:PuppynaughtsXCatsteroids/Assets/Models/Materials.meta
 licenseType: Free
 DefaultImporter:
   userData: 
