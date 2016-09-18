@@ -38,68 +38,48 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-<<<<<<< HEAD
 		ps = GetComponentInChildren<ParticleSystem> ();
 
-		playerHorizontalControls.Add ("Player1", "P1 Horizontal");
-		playerHorizontalControls.Add ("Player2", "P2 Horizontal");
-		playerVerticalControls.Add ("Player1", "P1 Vertical");
-		playerVerticalControls.Add ("Player2", "P2 Vertical");
-=======
+		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
+		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
+		playerVerticalControls.Add (player.Player1, "P1 Vertical");
+		playerVerticalControls.Add (player.Player2, "P2 Vertical");
+
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
 		playerVerticalControls.Add (player.Player2, "P2 Vertical");
 		playerMine.Add (player.Player1, "P1 Mine");
 		playerMine.Add (player.Player2, "P2 Mine");
->>>>>>> 539559f4a7807834298170390632a15277e9772c
 
 		isBoosting = false;
 		isAttached = false;
 	}
 
-	// Update is called once per frame
-<<<<<<< HEAD
-	void Update () {
 
-		Rotate();
-		
-        if(Input.GetButtonDown("Detach") && isAttached)
-        {
-            Detatch();
-        }
-        if(Input.GetButtonDown("Mine") && isAttached)
-        {
-			if (!currentAsteroid.isMining) {
-				Mine ();
-			}
-        }
-
-
-
-		ParticleSystem.EmissionModule em = ps.emission;
-
-		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p.ToString()])) > .01 && !isAttached) {
-			em.enabled = true;
-		} else {
-			em.enabled = false;
-=======
 	void Update () 
 	{
-		if(!isAttached)
-		{
-			Rotate();
-		}
+
+		Rotate();
+
 		if(Input.GetButtonDown("Detach") && isAttached)
 		{
 			Detach();
 		}
+
 		string whichMine = playerMine[p];
 		float mine = Input.GetAxis (whichMine);
 		if(mine != 0 && isAttached)
 		{
 			Mine();
->>>>>>> 539559f4a7807834298170390632a15277e9772c
+		}
+
+		ParticleSystem.EmissionModule em = ps.emission;
+
+		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
+			em.enabled = true;
+		} else {
+			em.enabled = false;
 		}
 	}
 
