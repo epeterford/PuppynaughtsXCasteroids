@@ -112,14 +112,8 @@ public class Asteroid : MonoBehaviour {
 			lastScale = currentScale;
 			yield return null;
 		}
-<<<<<<< HEAD
-        myPlayer.isAttached = false;
-        myPlayer.currentAsteroid = null;
-        gm.SpawnPointsUI(this.gameObject.transform.position);
-=======
 		myPlayer.Revert();
 		mom.currentNum--;
->>>>>>> a86653fc1cf85df18e97c77a2f53d92ed851b5d7
         Destroy(this.gameObject);
 
     }
