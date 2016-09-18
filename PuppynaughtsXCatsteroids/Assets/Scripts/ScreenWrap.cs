@@ -4,7 +4,7 @@ using System.Collections;
 public class ScreenWrap : MonoBehaviour {
 
 	//Screen wrap variables
-	private MeshRenderer renderer;
+	public MeshRenderer renderer;
 	public Camera cam;
 	private Vector3 viewportsPosition;
 	public bool isWrappingX;
@@ -18,11 +18,12 @@ public class ScreenWrap : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		cam = Camera.main;
-
-		if (!GetComponent<MeshRenderer> ()) {
-			renderer = GetComponentInChildren<MeshRenderer> ();
-		} else {
-			renderer = GetComponent<MeshRenderer> ();
+		if (!renderer) {
+			if (!GetComponent<MeshRenderer> ()) {
+				renderer = GetComponentInChildren<MeshRenderer> ();
+			} else {
+				renderer = GetComponent<MeshRenderer> ();
+			}
 		}
 
 		viewportsPosition = cam.WorldToViewportPoint (transform.position);
@@ -58,7 +59,7 @@ public class ScreenWrap : MonoBehaviour {
 			isWrappingX = false;
 			isWrappingY = false;
 		}
-
+		Debug.Log (isVisible);
 		if (isWrappingX && isWrappingY) {
 			return;
 		}
@@ -68,7 +69,7 @@ public class ScreenWrap : MonoBehaviour {
 		Vector3 newPosition = transform.position;
 
 		if (!isWrappingX && (viewportsPosition.x > 1 || viewportsPosition.x < 0)) {
-			Debug.Log ("wrappingX");
+			//Debug.Log ("wrappingX");
 			newPosition += (newPosition.x > 0) ? new Vector3 (-.5f, 0, 0) : new Vector3 (.5f, 0, 0);
 			newPosition.x = -newPosition.x;
 			isWrappingX = true;
@@ -78,7 +79,7 @@ public class ScreenWrap : MonoBehaviour {
 
 
 		if (!isWrappingY && (viewportsPosition.y > 1 || viewportsPosition.y < 0)) {
-			Debug.Log ("wrappingY");
+			//Debug.Log ("wrappingY");
 			newPosition += (newPosition.y > 0) ? new Vector3 (0, -.5f, 0) : new Vector3 (0, .5f, 0);
 			newPosition.y = -newPosition.y;
 			isWrappingY = true;

@@ -30,11 +30,9 @@ public class GameOverManager : MonoBehaviour {
     {
         menuBtn.gameObject.SetActive(false);
         winnerText.gameObject.SetActive(false);
-        PlayerPrefs.SetFloat("CatScore", .90f);
-        PlayerPrefs.SetFloat("DogScore", .30f);
 
         // If Common Goal Met
-        if(PlayerPrefs.GetInt("CommonGoal")==0)
+        if(PlayerPrefs.GetInt("CommonGoal")==1)
         {
             
             MissionCompletePanel.SetActive(true);
@@ -98,11 +96,11 @@ public class GameOverManager : MonoBehaviour {
             }
 
 
-            if(dogBar.fillAmount >= PlayerPrefs.GetFloat("DogScore"))
+            if(dogBar.fillAmount >= PlayerPrefs.GetFloat("DogScore")/(PlayerPrefs.GetFloat("DogScore") + PlayerPrefs.GetFloat("CatScore")))
             {
                 dogBarFilled = true;
             }
-            if(catBar.fillAmount >= PlayerPrefs.GetFloat("CatScore"))
+            if(catBar.fillAmount >= PlayerPrefs.GetFloat("CatScore")/(PlayerPrefs.GetFloat("DogScore") + PlayerPrefs.GetFloat("CatScore")))
             {
                 catBarFilled = true;
             }
@@ -118,7 +116,7 @@ public class GameOverManager : MonoBehaviour {
 
     public void ToMenu()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("MainMenuScene");
 
     }
 }

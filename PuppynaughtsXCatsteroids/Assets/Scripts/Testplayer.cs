@@ -32,7 +32,8 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
-	public ParticleSystem[] ps;
+	public ParticleSystem[] rocket;
+	public ParticleSystem[] boostP;
 
 	public GameObject playerHit;
     public GameObject PointTextPrefab;
@@ -66,8 +67,6 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		ps = GetComponentsInChildren<ParticleSystem> ();
-
 		boost = GetComponent<Boost> ();
 
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
@@ -95,6 +94,18 @@ public class Testplayer : MonoBehaviour {
 
 		isBoosting = false;
 		isAttached = false;
+
+		ParticleSystem.EmissionModule em;
+
+		foreach (ParticleSystem sys in rocket) {
+			em = sys.emission;
+			em.enabled = false;
+		}
+
+		foreach (ParticleSystem sys in boostP) {
+			em = sys.emission;
+			em.enabled = false;
+		}
 
 	}
 		
@@ -134,46 +145,51 @@ public class Testplayer : MonoBehaviour {
 			if(Input.GetButtonDown(whichMine) && isAttached && !isMining){
                 Mine();
             }
-				
-    			
-            if(rb2D.velocity.magnitude > driftSpeed)
-            {
-                //rocketSound.Play();
 
-            }
-            else
-            {
-                //rocketSound.Stop();
-            }
-        }
-
-		ParticleSystem.EmissionModule em;
-		if (p == player.XPlayer1 || p == player.XPlayer2) {
-			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
-				foreach (ParticleSystem sys in ps) {
-					em = sys.emission;
-					em.enabled = true;
+			ParticleSystem.EmissionModule em;
+			if (p == player.XPlayer1 || p == player.XPlayer2) {
+				if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached && !isBoosting) {
+					foreach (ParticleSystem sys in rocket) {
+						em = sys.emission;
+						em.enabled = true;
+						//rocketSound.Play();
+					}
+				} else {
+					foreach (ParticleSystem sys in rocket) {
+						em = sys.emission;
+						em.enabled = false;
+						//rocketSound.Stop();
+					}
 				}
 			} else {
-				foreach (ParticleSystem sys in ps) {
+				if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached && !boost.isBoosting) {
+					foreach (ParticleSystem sys in rocket) {
+						em = sys.emission;
+						em.enabled = true;
+						//rocketSound.Play();
+					}
+				} else {
+					foreach (ParticleSystem sys in rocket) {
+						em = sys.emission;
+						em.enabled = false;
+						//rocketSound.Stop();
+					}
+				}
+			}
+
+			if (boost.isBoosting) {
+				foreach (ParticleSystem sys in boostP) {
+					em = sys.emission;
+					em.enabled = true;
+					//rocketSound.Play();
+				}
+			} else {
+				foreach (ParticleSystem sys in boostP) {
 					em = sys.emission;
 					em.enabled = false;
 				}
 			}
-		} else {
-			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
-				foreach (ParticleSystem sys in ps) {
-					em = sys.emission;
-					em.enabled = true;
-				}
-			} else {
-				foreach (ParticleSystem sys in ps) {
-					em = sys.emission;
-					em.enabled = false;
-				}
-			}
-		}
-			
+        }	
 	}
 
 	void FixedUpdate()
@@ -219,10 +235,12 @@ public class Testplayer : MonoBehaviour {
         
         if(p == player.Player1)
         {
+            gm.catCoolDown.fillAmount = 0;
             gm.dogNeedsCoolDown = true;
         }
         else if(p == player.Player2)
         {
+            gm.dogCoolDown.fillAmount = 0;
             gm.catNeedsCoolDown = true;
         }
 
