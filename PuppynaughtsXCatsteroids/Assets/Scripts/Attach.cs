@@ -47,6 +47,6 @@ public class Attach : MonoBehaviour {
 		asteroid.attatchment = transform;
 		Destroy(asteroid.GetComponent<Rigidbody2D>());
         myPlayer.currentAsteroid = asteroid; 
-		asteroid.playerMounted = true;
+		asteroid.playerMounted = myPlayer.p;
     }
 }
