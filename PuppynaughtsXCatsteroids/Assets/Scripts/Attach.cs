@@ -45,4 +45,6 @@ public class Attach : MonoBehaviour {
         myPlayer.currentAsteroid = asteroid; 
 		asteroid.myPlayer = myPlayer;
     }
+
+
 }

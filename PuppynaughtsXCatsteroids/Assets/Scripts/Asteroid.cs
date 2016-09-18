@@ -29,6 +29,9 @@ public class Asteroid : MonoBehaviour {
 	public GameObject badLand;
 	public GameObject noseHit;
 
+	float killTime;
+	MeshRenderer mr;
+
 	bool collisionCool;
 
 	// Use this for initialization
@@ -40,6 +43,10 @@ public class Asteroid : MonoBehaviour {
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
+
+		mr = GetComponent<MeshRenderer> ();
+
+		killTime = 0;
 
 		collisionCool = false;
 
@@ -62,7 +69,15 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-
+		if (!mr.isVisible) {
+			killTime += Time.deltaTime;
+			if (killTime > 5) {
+				mom.currentNum--;
+				Destroy (gameObject);
+			}
+		} else {
+			killTime = 0;
+		}
 	}
 
 	void FixedUpdate(){
@@ -87,8 +102,15 @@ public class Asteroid : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D other){
-		if (other.gameObject.tag == "Nose" && !collisionCool) {
-			//other.contacts[0]
+		if (other.gameObject.tag == "Player" && !collisionCool) {
+			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
+			if(playerTemp.rb2D.velocity.magnitude >= 3){
+				GameObject ps = Instantiate (noseHit, other.contacts[0].point, Quaternion.identity) as GameObject;
+				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
+				sm.radius = .2f;
+				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
+				StartCoroutine ("hitCool");
+			}
 		}
 	}
 		
@@ -123,6 +145,12 @@ public class Asteroid : MonoBehaviour {
         Destroy(this.gameObject);
 
     }
+
+	IEnumerator hitCool(){
+		collisionCool = true;
+		yield return new WaitForSeconds (.3f);
+		collisionCool = false;
+	}
 
 	public void Detach()
     {

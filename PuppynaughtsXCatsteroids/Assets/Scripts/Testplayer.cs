@@ -24,11 +24,19 @@ public class Testplayer : MonoBehaviour {
 
 	public ParticleSystem ps;
 
+	public GameObject playerHit;
+
+	bool collisionCool;
+
+	Boost boost;
+
 	// Use this for initialization
 	void Start () 
     {
 		maxSpeed = 6;
 		speed = 15;
+
+		collisionCool = false;
 
 		Debug.Log (p.ToString());
 		maxSpeed = 6;
@@ -39,6 +47,8 @@ public class Testplayer : MonoBehaviour {
 		rb2D.angularDrag = 3;
 
 		ps = GetComponentInChildren<ParticleSystem> ();
+
+		boost = GetComponent<Boost> ();
 
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
@@ -54,7 +64,7 @@ public class Testplayer : MonoBehaviour {
 
 	void Update () 
 	{
-
+		Debug.Log (rb2D.velocity.magnitude);
 		Rotate();
 
 		if(Input.GetButtonDown("Detach") && isAttached)
@@ -144,7 +154,7 @@ public class Testplayer : MonoBehaviour {
 		string whichVerticalAxis = playerVerticalControls[p];
 		float verticalAxis = Input.GetAxis (whichVerticalAxis);
 
-		if (currentSpeed > maxSpeed && verticalAxis !=0)
+		if (currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
 		{
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
 		}
@@ -171,5 +181,22 @@ public class Testplayer : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionEnter2D(Collision2D other){
+		if (other.gameObject.tag == "Player" && !collisionCool) {
+			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
+			if(playerTemp.rb2D.velocity.magnitude >= 3){
+				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.identity) as GameObject;
+				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
+				sm.radius = 1f;
+				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
+				StartCoroutine ("hitCool");
+			}
+		}
+	}
 
+	IEnumerator hitCool(){
+		collisionCool = true;
+		yield return new WaitForSeconds (.3f);
+		collisionCool = false;
+	}
 }
