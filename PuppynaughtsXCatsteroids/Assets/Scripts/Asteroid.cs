@@ -138,11 +138,13 @@ public class Asteroid : MonoBehaviour {
         if(myPlayer.p == Testplayer.player.Player1)
         {
             // dog scores
+            Debug.Log("DogScores!");
             gm.DogScores(points/200);
         }
         else if(myPlayer.p == Testplayer.player.Player2)
         {
             // cat scores
+            Debug.Log("CatScores!");
             gm.CatScores(points/200);
            
         }
