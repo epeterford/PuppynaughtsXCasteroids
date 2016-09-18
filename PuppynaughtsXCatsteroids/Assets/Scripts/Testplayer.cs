@@ -115,59 +115,26 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-<<<<<<< HEAD
-		Rotate();
-
-		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
-		{
-			Detach();
-		}
-
-		if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
-			boost.ShipBoost ();
-			BoostCooldown ();         
-		}
-		string whichMine = playerMine[p];
-        if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
-=======
+		
         if(gm.gameStarted)
->>>>>>> 7c87de9b26e0f153e0b6525ef4aa884f035ac77a
         {
-    		//Debug.Log (rb2D.velocity.magnitude);
 
-    		Rotate();
+			Rotate();
 
-    		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
-    		{
-    			Detach();
-    		}
+			if(Input.GetButtonDown(playerDetach[p]) && isAttached)
+			{
+				Detach();
+			}
 
-    		if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
-    		{
-    			boost.ShipBoost();
-                BoostCooldown(); 
-    		}
-
-    		string whichMine = playerMine[p];
-            if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
-            {
+			if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
+				boost.ShipBoost ();
+				BoostCooldown ();         
+			}
+			string whichMine = playerMine[p];
+			if(Input.GetButtonDown(whichMine) && isAttached && !isMining){
                 Mine();
             }
-
-    		ParticleSystem.EmissionModule em = ps.emission;
-    		if (p == player.XPlayer1 || p == player.XPlayer2) {
-    			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
-    				em.enabled = true;
-    			} else {
-    				em.enabled = false;
-    			}
-    		} else {
-    			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
-    				em.enabled = true;
-    			} else {
-    				em.enabled = false;
-    			}
-    		}
+				
     			
             if(rb2D.velocity.magnitude > driftSpeed)
             {
@@ -179,7 +146,6 @@ public class Testplayer : MonoBehaviour {
                 rocketSound.Stop();
             }
         }
-<<<<<<< HEAD
 
 		ParticleSystem.EmissionModule em;
 		if (p == player.XPlayer1 || p == player.XPlayer2) {
@@ -208,8 +174,6 @@ public class Testplayer : MonoBehaviour {
 			}
 		}
 			
-=======
->>>>>>> 7c87de9b26e0f153e0b6525ef4aa884f035ac77a
 	}
 
 	void FixedUpdate()

@@ -69,7 +69,7 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
-		rb2D.AddTorque (Random.Range (-10, 10));
+		rb2D.AddTorque (Random.Range (-10, 10)*scale);
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
     }
