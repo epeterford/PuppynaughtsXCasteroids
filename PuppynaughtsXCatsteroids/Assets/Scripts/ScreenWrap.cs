@@ -5,14 +5,12 @@ public class ScreenWrap : MonoBehaviour {
 
 	//Screen wrap variables
 	private MeshRenderer renderer;
-	private Camera cam;
+	public Camera cam;
 	private Vector3 viewportsPosition;
 	public bool isWrappingX;
 	public bool isWrappingY;
 
 	public bool startOffScreen;
-
-	public Rigidbody2D rb2D;
 
 	float lastX;
 	float lastY;
@@ -30,7 +28,6 @@ public class ScreenWrap : MonoBehaviour {
 		viewportsPosition = cam.WorldToViewportPoint (transform.position);
 		isWrappingX = false;
 		isWrappingY = false;
-		rb2D = GetComponent<Rigidbody2D> ();
 	}
 
 	// Update is called once per frame
@@ -67,13 +64,12 @@ public class ScreenWrap : MonoBehaviour {
 		}
 
 		viewportsPosition = cam.WorldToViewportPoint (transform.position);
+		Debug.Log (viewportsPosition);
 		Vector3 newPosition = transform.position;
 
-
-
 		if (!isWrappingX && (viewportsPosition.x > 1 || viewportsPosition.x < 0)) {
-
-
+			Debug.Log ("wrappingX");
+			newPosition += (newPosition.x > 0) ? new Vector3 (-.5f, 0, 0) : new Vector3 (.5f, 0, 0);
 			newPosition.x = -newPosition.x;
 			isWrappingX = true;
 
@@ -82,7 +78,8 @@ public class ScreenWrap : MonoBehaviour {
 
 
 		if (!isWrappingY && (viewportsPosition.y > 1 || viewportsPosition.y < 0)) {
-
+			Debug.Log ("wrappingY");
+			newPosition += (newPosition.y > 0) ? new Vector3 (0, -.5f, 0) : new Vector3 (0, .5f, 0);
 			newPosition.y = -newPosition.y;
 			isWrappingY = true;
 		}
