@@ -30,7 +30,7 @@ public class Boost : MonoBehaviour {
 	void Update () 
 	{
 		timeSinceBoost += Time.deltaTime;
-		if (timeSinceBoost > 1.5f) {
+		if (timeSinceBoost > 1f) {
 			isBoosting = false;
 		}
 	}
@@ -45,7 +45,7 @@ public class Boost : MonoBehaviour {
 		
 		if (isBoosting == true) {
 			// Boost will cut off when timeSinceBoost == 1.5, so this formula ramps down velocity to just under 3 (maxSpeed).
-			player.rb2D.velocity = new Vector2((maxBoost/Mathf.Pow(2+timeSinceBoost,2))*transform.up.x,(maxBoost/Mathf.Pow(2+timeSinceBoost,2))*transform.up.y);
+			player.rb2D.velocity = new Vector2((maxBoost/Mathf.Pow(1+timeSinceBoost,2))*transform.up.x,(maxBoost/Mathf.Pow(1+timeSinceBoost,2))*transform.up.y);
 		}
 	}
 

@@ -185,19 +185,19 @@ public class Asteroid : MonoBehaviour {
         {
             // dog scores
             Debug.Log("DogScores!");
-            gm.DogScores(points/200);
+            gm.DogScores(points);
         }
         else if(myPlayer.p == Testplayer.player.Player2)
         {
             // cat scores
             Debug.Log("CatScores!");
-            gm.CatScores(points/200);
+            gm.CatScores(points);
            
         }
 
         myPlayer.InitPointText(Mathf.Round(points).ToString());
         Debug.Log("Points Given: " + points);
-        Debug.Log("Actual Points Given: " + points/200);
+        Debug.Log("Actual Points Given: " + points);
 
     }
 }
