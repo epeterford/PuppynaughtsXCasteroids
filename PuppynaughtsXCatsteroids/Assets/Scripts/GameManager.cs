@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
@@ -17,7 +20,6 @@ public class GameManager : MonoBehaviour {
 	public bool catNeedsCoolDown = false;
 	public bool dogNeedsCoolDown = false;
 	public float commonGoal;
-	public float uiScoreScaling;
 	static bool commonGoalMet = false;
 	public bool gameStarted = false;
 	public Text startTimer;
@@ -33,10 +35,10 @@ public class GameManager : MonoBehaviour {
 		catScoreValue = 98f;
 		timeLeft = 60;
 		commonGoal = 200;
-        timeToStart = 5;
-        startTimer.text = timeToStart.ToString();
-        roundTimer.gameObject.SetActive(false);
-        StartGameTimer();
+		timeToStart = 5;
+		startTimer.text = timeToStart.ToString();
+		roundTimer.gameObject.SetActive(false);
+		StartGameTimer();
 	}
 
 	// Update is called once per frame
@@ -48,7 +50,9 @@ public class GameManager : MonoBehaviour {
 
 			UpdateRoundTime();
 
-			CheckIfCommonGoalMet();
+			SetCommonGoalMetIfSo();
+
+			UpdateScoreDisplay();
 
 			if(catNeedsCoolDown)
 			{
@@ -100,14 +104,12 @@ public class GameManager : MonoBehaviour {
 	public void DogScores(float points)
 	{
 		dogScoreValue += points;
-		UpdateScoreDisplay ();
 		Debug.Log("dog given: " + points);
 	}
 
 	public void CatScores(float points)
 	{
 		catScoreValue += points;
-		UpdateScoreDisplay ();
 		Debug.Log("dog given: " + points);
 	}
 	public void UpdateScoreDisplay()
@@ -170,20 +172,20 @@ public class GameManager : MonoBehaviour {
 		//SceneManager.LoadScene("GameOver");
 
 	}
-    void StartGameTimer()
-    {
+	void StartGameTimer()
+	{
 
-        //Subtract Time
-        timeToStart -= Time.deltaTime;
-        startTimer.text = Mathf.Round(timeToStart).ToString();
+		//Subtract Time
+		timeToStart -= Time.deltaTime;
+		startTimer.text = Mathf.Round(timeToStart).ToString();
 
-        if(timeToStart<0)
-        {
-            //Start Game();
-            Destroy(startTimer.gameObject);
-            gameStarted = true;
-            roundTimer.gameObject.SetActive(true);
-        }
+		if(timeToStart<0)
+		{
+			//Start Game();
+			Destroy(startTimer.gameObject);
+			gameStarted = true;
+			roundTimer.gameObject.SetActive(true);
+		}
 
-    }
+	}
 }
