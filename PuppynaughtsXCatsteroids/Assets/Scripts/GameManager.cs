@@ -11,10 +11,12 @@ public class GameManager : MonoBehaviour {
     public float timeLeft; 
     public GameObject scoreUI;
     public float commonGoal;
-    bool commonGoalMet = false;
+    static bool commonGoalMet = false;
 	// Use this for initialization
 	void Start () 
     {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetInt("CommonGoal", 0);
         dogScore.fillAmount = 0f;
         catScore.fillAmount = 0f;
         timeLeft = 60;
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour {
     {
         if((dogScore.fillAmount*100) + (catScore.fillAmount*100) >=100)
         {
+            PlayerPrefs.SetInt("CommonGoal", 1); 
             commonGoalMet = true; 
         }
     }
@@ -90,12 +93,5 @@ public class GameManager : MonoBehaviour {
     {
         //SceneManager.LoadScene("GameOver");
     }
-
-    public void SpawnPointsUI(Vector3 pos)
-    {
-        /*Vector3 scorePos = Camera.main.WorldToScreenPoint(pos);
-        scorePos.x = scorePos.x / Screen.width;
-        scorePos.y = scorePos.y / Screen.height;
-        Instantiate(scoreUI, scorePos, Quaternion.identity);*/
-    }
+        
 }

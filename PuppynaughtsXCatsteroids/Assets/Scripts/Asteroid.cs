@@ -194,6 +194,8 @@ public class Asteroid : MonoBehaviour {
             gm.CatScores(points/200);
            
         }
+
+        myPlayer.InitPointText(Mathf.Round(points).ToString());
         Debug.Log("Points Given: " + points);
         Debug.Log("Actual Points Given: " + points/200);
 

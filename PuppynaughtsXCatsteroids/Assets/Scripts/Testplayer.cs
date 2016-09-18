@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ public class Testplayer : MonoBehaviour {
 	public ParticleSystem ps;
 
 	public GameObject playerHit;
-
+    public GameObject PointTextPrefab;
 	bool collisionCool;
 	public bool detaching;
 
@@ -69,11 +70,30 @@ public class Testplayer : MonoBehaviour {
 
 		isBoosting = false;
 		isAttached = false;
+
 	}
 		
+    public void InitPointText(string text)
+    {
+        GameObject temp = Instantiate(PointTextPrefab) as GameObject;
+        RectTransform tempRect = temp.GetComponent<RectTransform>();
 
+        temp.transform.SetParent(transform.FindChild("PointCanvas"));
+
+        tempRect.transform.localPosition = PointTextPrefab.transform.localPosition;
+        tempRect.transform.localScale = PointTextPrefab.transform.localScale;
+        tempRect.transform.localRotation = PointTextPrefab.transform.localRotation;
+
+        temp.GetComponent<Text>().text = text; 
+        temp.GetComponent<Animator>().SetTrigger("Score");
+        Destroy(temp.gameObject, 2.0f);
+    }
 	void Update () 
 	{
+<<<<<<< HEAD
+=======
+		//Debug.Log (rb2D.velocity.magnitude);
+>>>>>>> 9bcf8b88b3d1c183f5861567eb6a4f208eb39a8a
 		Rotate();
 
 		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
