@@ -94,10 +94,6 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-<<<<<<< HEAD
-		//Debug.Log (rb2D.velocity.magnitude);
-=======
->>>>>>> be676a072b37ec022f1bc0c94a805b53421807c0
 		Rotate();
 
 		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
