@@ -23,9 +23,9 @@ public class Attach : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag=="Asteroid")
+		if(other.tag=="Asteroid" && !myPlayer.isAttached)
         {
-            if(myPlayer.currentSpeed < myPlayer.attachSpeed)
+			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached)
             {
                 AttachToAsteroid(other.GetComponent<Asteroid>());
  
@@ -36,6 +36,9 @@ public class Attach : MonoBehaviour {
 
     void AttachToAsteroid(Asteroid asteroid)
     {
+		ParticleSystem.EmissionModule em = myPlayer.ps.emission;
+		em.enabled = false;
+
         myPlayer.isAttached = true;
 		myPlayer.rb2D.mass += asteroid.rb2D.mass;
 		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
@@ -44,6 +47,6 @@ public class Attach : MonoBehaviour {
 		asteroid.attatchment = transform;
 		Destroy(asteroid.GetComponent<Rigidbody2D>());
         myPlayer.currentAsteroid = asteroid; 
-		asteroid.playerMounted = myPlayer.p;
+		asteroid.myPlayer = myPlayer;
     }
 }

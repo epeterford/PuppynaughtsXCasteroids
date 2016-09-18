@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 68ef01ef3638da24cbdadf3e60c78c6b
-timeCreated: 1474155032
+guid: 5ab93c98a1cb9d84583308a4dbe3646e
+timeCreated: 1474160902
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -10,7 +10,6 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: asteroid2Baked
-    4300002: asteroidBaked
   materials:
     importMaterials: 1
     materialName: 0

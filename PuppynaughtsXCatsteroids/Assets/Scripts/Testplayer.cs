@@ -22,6 +22,7 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
+	public ParticleSystem ps;
 
 	// Use this for initialization
 	void Start () 
@@ -37,6 +38,8 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
+		ps = GetComponentInChildren<ParticleSystem> ();
+
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
@@ -47,24 +50,33 @@ public class Testplayer : MonoBehaviour {
 		isBoosting = false;
 		isAttached = false;
 	}
+		
 
-	// Update is called once per frame
 	void Update () 
 	{
-		if(!isAttached)
-		{
-			Rotate();
-		}
+
+		Rotate();
+
 		if(Input.GetButtonDown("Detach") && isAttached)
 		{
 			Detach();
 		}
+
 		string whichMine = playerMine[p];
 		float mine = Input.GetAxis (whichMine);
 		if(mine != 0 && isAttached)
 		{
 			Mine();
 		}
+
+		ParticleSystem.EmissionModule em = ps.emission;
+
+		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
+			em.enabled = true;
+		} else {
+			em.enabled = false;
+		}
+			
 	}
 
 	void FixedUpdate()
@@ -86,7 +98,7 @@ public class Testplayer : MonoBehaviour {
         if(currentAsteroid)
         {
             Asteroid asteroid = currentAsteroid;
-            asteroid.StartMining(this);
+            asteroid.StartMining();
         }
     }
 
@@ -103,6 +115,8 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 		currentAsteroid = null;
 
+		ParticleSystem.EmissionModule em = ps.emission;
+		em.enabled = true;
 	}
 
 	void Move()
@@ -146,7 +160,15 @@ public class Testplayer : MonoBehaviour {
 		// Horizontal axis for this player
 		string whichHorizontalAxis = playerHorizontalControls[p];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
-		transform.Rotate(0,0,horizontalAxis*Time.deltaTime*-180);
+		if (!isAttached) {
+			transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
+		} else {
+			if (currentAsteroid.currentScale > 1) {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180 / currentAsteroid.currentScale);
+			} else {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
+			}
+		}
 	}
 
 
