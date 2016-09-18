@@ -13,6 +13,9 @@ public class Testplayer : MonoBehaviour {
 	public Dictionary<player, string> playerBoost = new Dictionary<player, string> ();
 	public Dictionary<player, string> playerDetach = new Dictionary<player, string> ();
 
+    public Image catBoostBar;
+    public Image dogBoostBar; 
+    public GameManager gm; 
 	public player p;
 	float maxBoost;
 	public float maxSpeed;
@@ -39,6 +42,7 @@ public class Testplayer : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        gm = FindObjectOfType<GameManager>();
 		maxSpeed = 6;
 		speed = 15;
 
@@ -90,6 +94,10 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
+<<<<<<< HEAD
+		//Debug.Log (rb2D.velocity.magnitude);
+=======
+>>>>>>> be676a072b37ec022f1bc0c94a805b53421807c0
 		Rotate();
 
 		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
@@ -100,6 +108,7 @@ public class Testplayer : MonoBehaviour {
 		/*if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
 		{
 			boost.ShipBoost();
+            BoostCooldown();         
 		}*/
 
 		string whichMine = playerMine[p];
@@ -153,6 +162,19 @@ public class Testplayer : MonoBehaviour {
 
 	}
 
+    void BoostCooldown()
+    {
+        
+        if(p == player.Player1)
+        {
+            gm.dogNeedsCoolDown = true;
+        }
+        else if(p == player.Player2)
+        {
+            gm.catNeedsCoolDown = true;
+        }
+
+    }
 	public void Revert(){
         Debug.Log("Reverting");
 		maxSpeed = 6;
