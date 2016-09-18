@@ -23,7 +23,7 @@ public class Attach : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag=="Asteroid")
+		if(other.tag=="Asteroid" && !myPlayer.isAttached)
         {
 			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached)
             {

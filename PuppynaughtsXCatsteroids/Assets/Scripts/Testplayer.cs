@@ -49,28 +49,28 @@ public class Testplayer : MonoBehaviour {
 		isBoosting = false;
 		isAttached = false;
 	}
-
-	// Update is called once per frame
-	void Update () {
+		
+	void Update () 
+	{
 
 		Rotate();
-		
-        if(Input.GetButtonDown("Detach") && isAttached)
-        {
-            Detach();
-        }
+
+		if(Input.GetButtonDown("Detach") && isAttached)
+		{
+			Detach();
+		}
+
 		string whichMine = playerMine[p];
-		bool mine = Input.GetButtonDown (whichMine);
-		if(mine && isAttached && !currentAsteroid.isMining)
-        {
-			Mine ();
-        }
-
-
+		float mine = Input.GetAxis (whichMine);
+		if(mine != 0 && isAttached)
+		{
+			Mine();
+		}
 
 		ParticleSystem.EmissionModule em = ps.emission;
 
 		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
+
 			em.enabled = true;
 		} else {
 			em.enabled = false;
