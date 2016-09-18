@@ -11,6 +11,7 @@ ModelImporter:
     3300000: //RootNode
     4300000: asteroid2Baked
     4300002: asteroidBaked
+    4300004: asteroid
   materials:
     importMaterials: 1
     materialName: 0
