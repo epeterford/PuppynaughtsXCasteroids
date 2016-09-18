@@ -5,9 +5,13 @@ using System.Collections.Generic;
 public class Testplayer : MonoBehaviour {
 
 	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2};
+
 	public Dictionary<player, string> playerHorizontalControls = new Dictionary<player, string>();
 	public Dictionary<player, string> playerVerticalControls = new Dictionary<player, string>();
 	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
+	public Dictionary<player, string> playerBoost = new Dictionary<player, string> ();
+	public Dictionary<player, string> playerDetach = new Dictionary<player, string> ();
+
 	public player p;
 	float maxBoost;
 	public float maxSpeed;
@@ -27,6 +31,7 @@ public class Testplayer : MonoBehaviour {
 	public GameObject playerHit;
 
 	bool collisionCool;
+	public bool detaching;
 
 	Boost boost;
 
@@ -37,6 +42,7 @@ public class Testplayer : MonoBehaviour {
 		speed = 15;
 
 		collisionCool = false;
+		detaching = false;
 
 		Debug.Log (p.ToString());
 		maxSpeed = 6;
@@ -56,6 +62,10 @@ public class Testplayer : MonoBehaviour {
 		playerVerticalControls.Add (player.Player2, "P2 Vertical");
 		playerMine.Add (player.Player1, "P1 Mine");
 		playerMine.Add (player.Player2, "P2 Mine");
+		playerBoost.Add (player.Player1, "P1 Boost");
+		playerBoost.Add (player.Player2, "P2 Boost");
+		playerDetach.Add (player.Player1, "P1 Detach");
+		playerDetach.Add (player.Player2, "P2 Detach");
 
 		isBoosting = false;
 		isAttached = false;
@@ -64,13 +74,17 @@ public class Testplayer : MonoBehaviour {
 
 	void Update () 
 	{
-		Debug.Log (rb2D.velocity.magnitude);
 		Rotate();
 
-		if(Input.GetButtonDown("Detach") && isAttached)
+		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
 		{
 			Detach();
 		}
+
+		/*if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
+		{
+			boost.ShipBoost();
+		}*/
 
 		string whichMine = playerMine[p];
         if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
@@ -114,8 +128,13 @@ public class Testplayer : MonoBehaviour {
 
 	void Detach()
     {
-		Revert ();
+		
 		currentAsteroid.Detach ();
+		currentAsteroid.rb2D.AddForce (-10*(currentAsteroid.currentScale/2)*transform.up);
+		rb2D.AddForce (10 * transform.up);
+		StartCoroutine ("detachCool");
+		Revert ();
+
 	}
 
 	public void Revert(){
@@ -156,7 +175,7 @@ public class Testplayer : MonoBehaviour {
 
 		if (currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
 		{
-			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
+			rb2D.velocity = (verticalAxis > 0) ? Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f) : Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .5f);
 		}
 		else
 		{
@@ -185,11 +204,15 @@ public class Testplayer : MonoBehaviour {
 		if (other.gameObject.tag == "Player" && !collisionCool) {
 			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
 			if(playerTemp.rb2D.velocity.magnitude >= 3){
-				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.identity) as GameObject;
+				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.Euler(90,0,Mathf.Atan(Vector3.Distance(transform.position,other.transform.position)))) as GameObject;
 				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
 				sm.radius = 1f;
 				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
 				StartCoroutine ("hitCool");
+			}
+			if (playerTemp.boost.isBoosting && !detaching && playerTemp.isAttached) {
+				Detach ();
+				StartCoroutine ("detachCool");
 			}
 		}
 	}
@@ -198,5 +221,12 @@ public class Testplayer : MonoBehaviour {
 		collisionCool = true;
 		yield return new WaitForSeconds (.3f);
 		collisionCool = false;
+	}
+
+	IEnumerator detachCool(){
+		Debug.Log ("Running");
+		detaching = true;
+		yield return new WaitForSeconds (.5f);
+		detaching = false;
 	}
 }
