@@ -32,7 +32,7 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
-	public ParticleSystem ps;
+	public ParticleSystem[] ps;
 
 	public GameObject playerHit;
     public GameObject PointTextPrefab;
@@ -41,9 +41,16 @@ public class Testplayer : MonoBehaviour {
 
 	Boost boost;
 
+ 
+    public AudioSource playerAudio; 
+    public AudioSource rocketSound;
+    public AudioClip[] playerSounds; 
+    public float lowPitchRange = .95f;
+    public float highPitchRange = 1.05f;
 	// Use this for initialization
 	void Start () 
     {
+
         gm = FindObjectOfType<GameManager>();
 		maxSpeed = 6;
 		speed = 15;
@@ -59,7 +66,7 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		ps = GetComponentInChildren<ParticleSystem> ();
+		ps = GetComponentsInChildren<ParticleSystem> ();
 
 		boost = GetComponent<Boost> ();
 
@@ -108,41 +115,62 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-		Rotate();
-
-		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
-		{
-			Detach();
-		}
-
-		if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
-		{
-			boost.ShipBoost();
-<<<<<<< HEAD
-		}
-=======
-            BoostCooldown();         
-		}*/
->>>>>>> bb78c27e449091ad623fd7cbfa34914cb68a3312
-
-		string whichMine = playerMine[p];
-        if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
+		
+        if(gm.gameStarted)
         {
-            Mine();
+
+			Rotate();
+
+			if(Input.GetButtonDown(playerDetach[p]) && isAttached)
+			{
+				Detach();
+			}
+
+			if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
+				boost.ShipBoost ();
+				BoostCooldown ();         
+			}
+			string whichMine = playerMine[p];
+			if(Input.GetButtonDown(whichMine) && isAttached && !isMining){
+                Mine();
+            }
+				
+    			
+            if(rb2D.velocity.magnitude > driftSpeed)
+            {
+                rocketSound.Play();
+
+            }
+            else
+            {
+                rocketSound.Stop();
+            }
         }
 
-		ParticleSystem.EmissionModule em = ps.emission;
+		ParticleSystem.EmissionModule em;
 		if (p == player.XPlayer1 || p == player.XPlayer2) {
 			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
-				em.enabled = true;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
 			} else {
-				em.enabled = false;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
 			}
 		} else {
 			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
-				em.enabled = true;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
 			} else {
-				em.enabled = false;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
 			}
 		}
 			
@@ -150,14 +178,17 @@ public class Testplayer : MonoBehaviour {
 
 	void FixedUpdate()
     {
-        if(!isAttached)
+        if(gm.gameStarted)
         {
-            Move();
-        }
-        else
-        {
-			maxSpeed = 4 - currentAsteroid.currentScale/2;
-			Move();
+            if(!isAttached)
+            {
+                Move();
+            }
+            else
+            {
+    			maxSpeed = 4 - currentAsteroid.currentScale/2;
+    			Move();
+            }
         }
 
 	}	
@@ -203,8 +234,6 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 		currentAsteroid = null;
         isMining = false;
-		ParticleSystem.EmissionModule em = ps.emission;
-		em.enabled = true;
 	}
 
 	void Move()
@@ -239,14 +268,21 @@ public class Testplayer : MonoBehaviour {
 		}
 
 		if (verticalAxis < 0) {
-			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting) {
+			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting)
+            {
 				Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .35f);
-			} else {
+			} 
+            else 
+            {
 				rb2D.AddForce(transform.up*verticalAxis*speed);
 			}
-		} else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting){
+		} 
+        else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
+        {
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
-		}else{
+		}
+        else
+        {
 			rb2D.AddForce(transform.up*verticalAxis*speed);
 
 		}
@@ -267,7 +303,18 @@ public class Testplayer : MonoBehaviour {
 			}
 		}
 	}
+    public void PlayRandomPlayerAudio()
+    {
+        int randomIndex = Random.Range(0, playerSounds.Length);
 
+        float randomPitch = Random.Range (lowPitchRange, highPitchRange);
+
+        playerAudio.clip = playerSounds[randomIndex];
+        playerAudio.pitch = randomPitch;
+
+
+        playerAudio.Play();
+    }
 	void OnCollisionEnter2D(Collision2D other){
 		if (other.gameObject.tag == "Player" && !collisionCool) {
 			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();

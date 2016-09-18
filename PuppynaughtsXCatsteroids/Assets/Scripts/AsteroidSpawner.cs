@@ -12,7 +12,7 @@ public class AsteroidSpawner : MonoBehaviour {
 
 	bool full;
 
-	public GameObject asteroid;
+	public GameObject[] asteroid;
 
 	// Use this for initialization
 	void Start () {
@@ -57,7 +57,7 @@ public class AsteroidSpawner : MonoBehaviour {
 		}
 		spawnPos = Camera.main.ViewportToWorldPoint (spawnPos);
 
-		GameObject rock = Instantiate (asteroid, new Vector3(spawnPos.x,spawnPos.y,0), Quaternion.identity) as GameObject;
+		GameObject rock = Instantiate (asteroid[Random.Range(0,asteroid.Length)], new Vector3(spawnPos.x,spawnPos.y,0), Quaternion.identity) as GameObject;
 
 		//Vector3 target = new Vector3 (0, 0, 0);
 		//rock.transform.LookAt (target);
