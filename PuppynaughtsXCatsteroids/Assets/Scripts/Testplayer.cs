@@ -259,14 +259,21 @@ public class Testplayer : MonoBehaviour {
 		}
 
 		if (verticalAxis < 0) {
-			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting) {
+			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting)
+            {
 				Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .35f);
-			} else {
+			} 
+            else 
+            {
 				rb2D.AddForce(transform.up*verticalAxis*speed);
 			}
-		} else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting){
+		} 
+        else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
+        {
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
-		}else{
+		}
+        else
+        {
 			rb2D.AddForce(transform.up*verticalAxis*speed);
 
 		}

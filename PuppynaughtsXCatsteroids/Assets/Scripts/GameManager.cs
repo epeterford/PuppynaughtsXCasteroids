@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour {
     }
     void GameOver()
     {
-        //SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("GameOver");
     }
         
 }
