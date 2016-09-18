@@ -16,6 +16,8 @@ public class Asteroid : MonoBehaviour {
 	public float currentScale;
 
 	public float points;
+    public GameManager gm; 
+    public GameObject pointsUI; 
 
 	public Rigidbody2D rb2D;
 
@@ -27,6 +29,7 @@ public class Asteroid : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        gm = FindObjectOfType<GameManager>();
         myPlayer = FindObjectOfType<Testplayer>();
 		scale = Random.Range (.3f, 5);
 		currentScale = scale;
@@ -111,8 +114,14 @@ public class Asteroid : MonoBehaviour {
 			lastScale = currentScale;
 			yield return null;
 		}
+<<<<<<< HEAD
+        myPlayer.isAttached = false;
+        myPlayer.currentAsteroid = null;
+        gm.SpawnPointsUI(this.gameObject.transform.position);
+=======
 		myPlayer.Revert();
 		mom.currentNum--;
+>>>>>>> a86653fc1cf85df18e97c77a2f53d92ed851b5d7
         Destroy(this.gameObject);
 
     }
