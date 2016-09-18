@@ -16,44 +16,74 @@ public class GameManager : MonoBehaviour {
     public bool dogNeedsCoolDown = false;
     public float commonGoal;
     static bool commonGoalMet = false;
+    public bool gameStarted = false;
+    public Text startTimer;
+    public float timeToStart; 
 	// Use this for initialization
 	void Start () 
     {
+        
         PlayerPrefs.DeleteAll();
         PlayerPrefs.SetInt("CommonGoal", 0);
         dogScore.fillAmount = 0f;
         catScore.fillAmount = 0f;
         timeLeft = 60;
         commonGoal = 100;
+        timeToStart = 5;
+        startTimer.text = timeToStart.ToString();
+        roundTimer.gameObject.SetActive(false);
+        StartGameTimer();
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        UpdateCurrentScore();
-
-        UpdateRoundTime();
-
-        CheckIfCommonGoalMet();
-
-        if(catNeedsCoolDown)
+        if(gameStarted)
         {
-            catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-            if(catCoolDown.fillAmount>=1)
+            UpdateCurrentScore();
+
+            UpdateRoundTime();
+
+            CheckIfCommonGoalMet();
+
+            if(catNeedsCoolDown)
             {
-                catNeedsCoolDown = false;
+                catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+                if(catCoolDown.fillAmount>=1)
+                {
+                    catNeedsCoolDown = false;
+                }
+            }
+            if(dogNeedsCoolDown)
+            {
+                dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+                if(dogCoolDown.fillAmount>=1)
+                {
+                    dogNeedsCoolDown = false;
+                }
             }
         }
-        if(dogNeedsCoolDown)
+        else
         {
-            dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-            if(dogCoolDown.fillAmount>=1)
-            {
-                dogNeedsCoolDown = false;
-            }
+            StartGameTimer();
         }
 	}
+    void StartGameTimer()
+    {
 
+        //Subtract Time
+        timeToStart -= Time.deltaTime;
+        startTimer.text = Mathf.Round(timeToStart).ToString();
+
+        if(timeToStart<0)
+        {
+            //Start Game();
+            Destroy(startTimer.gameObject);
+            gameStarted = true;
+            roundTimer.gameObject.SetActive(true);
+        }
+
+    }
     void UpdateCurrentScore()
     {
         if(dogScore.fillAmount>catScore.fillAmount)
