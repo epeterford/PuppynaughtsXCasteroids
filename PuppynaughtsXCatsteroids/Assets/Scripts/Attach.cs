@@ -25,7 +25,7 @@ public class Attach : MonoBehaviour {
     {
         if(other.tag=="Asteroid")
         {
-            if(myPlayer.currentSpeed < myPlayer.attachSpeed)
+			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached)
             {
                 AttachToAsteroid(other.GetComponent<Asteroid>());
  
