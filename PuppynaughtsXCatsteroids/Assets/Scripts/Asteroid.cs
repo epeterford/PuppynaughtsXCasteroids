@@ -57,15 +57,10 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-		if (playerMounted != Testplayer.player.NoPlayer) {
-			if (rb2D.velocity.magnitude > maxSpeed) {
-				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
-			}
-				
-		}
+      //  Debug.Log("Current Asteroids: " + mom.currentNum);
 	}
 	void FixedUpdate(){
-		if (playerMounted != Testplayer.player.NoPlayer) {
+		if (playerMounted == Testplayer.player.NoPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
@@ -92,10 +87,8 @@ public class Asteroid : MonoBehaviour {
 	}
 	public void StartMining(Testplayer player)
     {
-        Debug.Log("Starting " + Time.time);
 		StartCoroutine("MineAndDestroy");
 		playerMounted = player.p;
-        Debug.Log("Before Mining finishes " + Time.time);
     
 	}
 		
@@ -106,7 +99,8 @@ public class Asteroid : MonoBehaviour {
 		Vector3 startScale = transform.localScale;
 		float lastScale = scale;
 		Transform mp = myPlayer.transform;
-		while (mineTime < scale*1.5f) {
+		while (mineTime < scale*1.5f) 
+        {
 			mineTime += Time.deltaTime;
 			transform.localScale = Vector3.Lerp (startScale, new Vector3 (.1f, .1f, .1f), mineTime/(scale*1.5f));
 			currentScale = transform.localScale.x;
@@ -118,6 +112,7 @@ public class Asteroid : MonoBehaviour {
 
 		myPlayer.Revert();
 		mom.currentNum--;
+        GivePoints(points);
         Destroy(this.gameObject);
 
     }
@@ -131,4 +126,22 @@ public class Asteroid : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.mass = currentScale;
 	}
+
+    void GivePoints(float points)
+    {
+        if(playerMounted == Testplayer.player.Player1)
+        {
+            // cat scores
+            gm.CatScores(points/200);
+        }
+        else if(playerMounted == Testplayer.player.Player2)
+        {
+            // dog scores
+            gm.DogScores(points/200);
+           
+        }
+        Debug.Log("Points Given: " + points);
+        Debug.Log("Actual Points Given: " + points/200);
+
+    }
 }

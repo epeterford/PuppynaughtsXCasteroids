@@ -10,12 +10,15 @@ public class GameManager : MonoBehaviour {
     public Text roundTimer; 
     public float timeLeft; 
     public GameObject scoreUI;
+    public float commonGoal;
+    bool commonGoalMet = false;
 	// Use this for initialization
 	void Start () 
     {
-        dogScore.fillAmount = 1f;
-        catScore.fillAmount = 1f;
+        dogScore.fillAmount = 0f;
+        catScore.fillAmount = 0f;
         timeLeft = 60;
+        commonGoal = 100;
 	}
 	
 	// Update is called once per frame
@@ -24,6 +27,8 @@ public class GameManager : MonoBehaviour {
         UpdateCurrentScore();
 
         UpdateRoundTime();
+
+        CheckIfCommonGoalMet();
 
 	}
 
@@ -42,6 +47,24 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    void CheckIfCommonGoalMet()
+    {
+        if((dogScore.fillAmount*100) + (catScore.fillAmount*100) >=100)
+        {
+            commonGoalMet = true; 
+        }
+    }
+
+    public void DogScores(float points)
+    {
+        dogScore.fillAmount+=points;
+        Debug.Log("dog given: " + points);
+    }
+
+    public void CatScores(float points)
+    {
+        catScore.fillAmount+=points;
+    }
     void UpdateRoundTime()
     {
         //Subtract Time

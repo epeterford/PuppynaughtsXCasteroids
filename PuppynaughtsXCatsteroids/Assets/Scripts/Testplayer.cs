@@ -90,12 +90,14 @@ public class Testplayer : MonoBehaviour {
         }
     }
 
-	void Detach(){
+	void Detach()
+    {
 		Revert ();
 		currentAsteroid.Detach ();
 	}
 
 	public void Revert(){
+        Debug.Log("Reverting");
 		maxSpeed = 6;
 		rb2D.mass = 1;
 		isAttached = false;
@@ -106,7 +108,8 @@ public class Testplayer : MonoBehaviour {
 	void Move()
 	{
 		//Friction
-		if (rb2D.velocity.magnitude > driftSpeed) {
+		if (rb2D.velocity.magnitude > driftSpeed)
+        {
 			Vector3 easeVelocity = rb2D.velocity;
 			easeVelocity.y *= .99f;
 			easeVelocity.z = 0.0f;
@@ -129,7 +132,6 @@ public class Testplayer : MonoBehaviour {
 
 		if (currentSpeed > maxSpeed && verticalAxis !=0)
 		{
-			Debug.Log("Clamping");
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
 		}
 		else
