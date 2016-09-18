@@ -60,7 +60,18 @@ public class AudioManager : MonoBehaviour {
 		efxSource.clip = sfxClips[randomIndex];
 		efxSource.pitch = randomPitch;
 
-		exfSource.Play ();
+		efxSource.Play ();
+	}
+
+	public void PlayRandomCollision(){
+		int randomIndex = Random.Range(3, 7);
+
+		float randomPitch = Random.Range (lowPitchRange, highPitchRange);
+
+		efxSource.clip = sfxClips[randomIndex];
+		efxSource.pitch = randomPitch;
+
+		efxSource.Play ();
 	}
 
 
