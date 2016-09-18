@@ -235,10 +235,12 @@ public class Testplayer : MonoBehaviour {
         
         if(p == player.Player1)
         {
+            gm.catCoolDown.fillAmount = 0;
             gm.dogNeedsCoolDown = true;
         }
         else if(p == player.Player2)
         {
+            gm.dogCoolDown.fillAmount = 0;
             gm.catNeedsCoolDown = true;
         }
 

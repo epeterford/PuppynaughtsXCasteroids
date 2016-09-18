@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:PuppynaughtsXCatsteroids/Assets/Audio/ScorePoints03.wav.meta
+guid: 6e9e21fab0be8432c87b18578d7c98a4
+timeCreated: 1474226677
+=======
 guid: 0b82375af057af04caa7a8b52359a591
 timeCreated: 1474227441
+>>>>>>> 3beecb4b400fa17fa91759a6dee0c8dc257ec678:PuppynaughtsXCatsteroids/Assets/Audio/ScorePoints03.wav.meta
 licenseType: Free
 AudioImporter:
   serializedVersion: 6
