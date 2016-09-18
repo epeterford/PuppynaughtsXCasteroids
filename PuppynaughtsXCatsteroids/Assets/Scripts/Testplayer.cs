@@ -138,12 +138,12 @@ public class Testplayer : MonoBehaviour {
     			
             if(rb2D.velocity.magnitude > driftSpeed)
             {
-                rocketSound.Play();
+                //rocketSound.Play();
 
             }
             else
             {
-                rocketSound.Stop();
+                //rocketSound.Stop();
             }
         }
 
