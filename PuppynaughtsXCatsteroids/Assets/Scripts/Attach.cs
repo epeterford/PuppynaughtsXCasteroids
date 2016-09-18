@@ -36,6 +36,9 @@ public class Attach : MonoBehaviour {
 
     void AttachToAsteroid(Asteroid asteroid)
     {
+		ParticleSystem.EmissionModule em = myPlayer.ps.emission;
+		em.enabled = false;
+
         myPlayer.isAttached = true;
 		myPlayer.rb2D.mass += asteroid.rb2D.mass;
 		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
