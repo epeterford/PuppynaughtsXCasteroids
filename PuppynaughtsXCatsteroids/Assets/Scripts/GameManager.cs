@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour {
     public Text roundTimer; 
     public float timeLeft; 
     public GameObject scoreUI;
+    public Image dogCoolDown;
+    public Image catCoolDown; 
+
     public float commonGoal;
     static bool commonGoalMet = false;
 	// Use this for initialization
