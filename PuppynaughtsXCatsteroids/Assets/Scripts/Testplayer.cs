@@ -24,6 +24,10 @@ public class Testplayer : MonoBehaviour {
 
 	public ParticleSystem ps;
 
+	public GameObject playerHit;
+
+	bool collisionCool;
+
 	Boost boost;
 
 	// Use this for initialization
@@ -31,6 +35,8 @@ public class Testplayer : MonoBehaviour {
     {
 		maxSpeed = 6;
 		speed = 15;
+
+		collisionCool = false;
 
 		Debug.Log (p.ToString());
 		maxSpeed = 6;
@@ -58,7 +64,7 @@ public class Testplayer : MonoBehaviour {
 
 	void Update () 
 	{
-
+		Debug.Log (rb2D.velocity.magnitude);
 		Rotate();
 
 		if(Input.GetButtonDown("Detach") && isAttached)
@@ -175,5 +181,22 @@ public class Testplayer : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionEnter2D(Collision2D other){
+		if (other.gameObject.tag == "Player" && !collisionCool) {
+			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
+			if(playerTemp.rb2D.velocity.magnitude >= 3){
+				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.identity) as GameObject;
+				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
+				sm.radius = 1f;
+				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
+				StartCoroutine ("hitCool");
+			}
+		}
+	}
 
+	IEnumerator hitCool(){
+		collisionCool = true;
+		yield return new WaitForSeconds (.3f);
+		collisionCool = false;
+	}
 }

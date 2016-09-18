@@ -9,10 +9,6 @@ public class Attach : MonoBehaviour {
     {
         myPlayer = transform.parent.GetComponent<Testplayer>();
 
-        if(myPlayer)
-        {
-            Debug.Log("FOund Player");
-        }
 	}
 	
 	// Update is called once per frame
@@ -49,4 +45,6 @@ public class Attach : MonoBehaviour {
         myPlayer.currentAsteroid = asteroid; 
 		asteroid.myPlayer = myPlayer;
     }
+
+
 }
