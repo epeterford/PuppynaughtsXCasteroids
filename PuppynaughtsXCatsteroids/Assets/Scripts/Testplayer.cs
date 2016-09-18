@@ -18,7 +18,7 @@ public class Testplayer : MonoBehaviour {
 
 	public bool isAttached;
 	bool isBoosting;
-
+    public bool isMining = false;
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
@@ -63,11 +63,10 @@ public class Testplayer : MonoBehaviour {
 		}
 
 		string whichMine = playerMine[p];
-        bool mine = Input.GetButtonDown (whichMine);
-		if(mine && isAttached)
-		{
-			Mine();
-		}
+        if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
+        {
+            Mine();
+        }
 
 		ParticleSystem.EmissionModule em = ps.emission;
 
@@ -97,6 +96,7 @@ public class Testplayer : MonoBehaviour {
     {
         if(currentAsteroid)
         {
+            isMining = true;
             Asteroid asteroid = currentAsteroid;
             asteroid.StartMining();
         }
@@ -114,7 +114,7 @@ public class Testplayer : MonoBehaviour {
 		rb2D.mass = 1;
 		isAttached = false;
 		currentAsteroid = null;
-
+        isMining = false;
 		ParticleSystem.EmissionModule em = ps.emission;
 		em.enabled = true;
 	}
