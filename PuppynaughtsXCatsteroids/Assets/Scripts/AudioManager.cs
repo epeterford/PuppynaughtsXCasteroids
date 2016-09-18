@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour {
 
     public AudioClip[] sfxClips; 
     public AudioClip[] bgClilps;
+	public AudioClip[] music;
     public float lowPitchRange = .95f;
     public float highPitchRange = 1.05f;
 
@@ -24,6 +25,9 @@ public class AudioManager : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+
+		musicSource.clip = music [0];
+		musicSource.Play ();
 
         DontDestroyOnLoad(gameObject);
     }
@@ -47,6 +51,17 @@ public class AudioManager : MonoBehaviour {
 
         efxSource.Play();
     }
+
+	public void PlayRandomExplosion(){
+		int randomIndex = Random.Range(7, 12);
+
+		float randomPitch = Random.Range (lowPitchRange, highPitchRange);
+
+		efxSource.clip = sfxClips[randomIndex];
+		efxSource.pitch = randomPitch;
+
+		exfSource.Play ();
+	}
 
 
 	// Use this for initialization
