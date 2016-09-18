@@ -1,22 +1,26 @@
 fileFormatVersion: 2
-guid: 99c33e0fa7523b04f840bd9de6f2eea2
-timeCreated: 1474167082
-licenseType: Free
+guid: bc9f00c0671a31b498eaf4abf2bdd048
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: boneDupllicated
+    100000: bone.001
     100002: //RootNode
     100004: glass.duped
-    400000: boneDupllicated
+    100006: pSphere2.003
+    400000: bone.001
     400002: //RootNode
     400004: glass.duped
-    2300000: boneDupllicated
+    400006: pSphere2.003
+    2300000: bone.001
     2300002: glass.duped
-    3300000: boneDupllicated
+    2300004: pSphere2.003
+    3300000: bone.001
     3300002: glass.duped
-    4300000: glass.duped
-    4300002: boneDupllicated
+    3300004: pSphere2.003
+    4300000: bone.001
+    4300002: glass.duped
+    4300004: pSphere2.003
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -41,7 +45,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -75,7 +79,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
