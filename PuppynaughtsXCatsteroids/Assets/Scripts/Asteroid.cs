@@ -38,6 +38,8 @@ public class Asteroid : MonoBehaviour {
 
 	float driftSpeed;
 
+	public AudioManager am;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -48,6 +50,8 @@ public class Asteroid : MonoBehaviour {
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
+
+		am = GameObject.FindGameObjectWithTag ("Audio").GetComponent<AudioManager>();
 
 		driftSpeed = Random.Range (.2f, 2f);
 
