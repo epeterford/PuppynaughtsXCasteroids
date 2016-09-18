@@ -35,7 +35,7 @@ public class Attach : MonoBehaviour {
     {
 		Debug.Log ("Attaching");
 		ParticleSystem.EmissionModule em;
-		foreach(ParticleSystem sys in myPlayer.ps){
+		foreach(ParticleSystem sys in myPlayer.rocket){
 			em = sys.emission;
 			em.enabled = false;
 		}
