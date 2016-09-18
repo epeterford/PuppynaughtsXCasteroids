@@ -51,7 +51,7 @@ public class Asteroid : MonoBehaviour {
 
 		driftSpeed = Random.Range (.2f, 2f);
 
-		mr = GetComponent<MeshRenderer> ();
+		mr = GetComponentInChildren<MeshRenderer> ();
 
 		killTime = 0;
 
@@ -69,7 +69,7 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
-		rb2D.AddTorque (Random.Range (-3, 3));
+		rb2D.AddTorque (Random.Range (-10, 10)*scale);
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
     }

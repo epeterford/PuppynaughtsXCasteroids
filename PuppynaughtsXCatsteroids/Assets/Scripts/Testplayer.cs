@@ -32,7 +32,7 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
-	public ParticleSystem ps;
+	public ParticleSystem[] ps;
 
 	public GameObject playerHit;
     public GameObject PointTextPrefab;
@@ -66,7 +66,7 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		ps = GetComponentInChildren<ParticleSystem> ();
+		ps = GetComponentsInChildren<ParticleSystem> ();
 
 		boost = GetComponent<Boost> ();
 
@@ -115,43 +115,26 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
+		
         if(gm.gameStarted)
         {
-    		//Debug.Log (rb2D.velocity.magnitude);
 
-    		Rotate();
+			Rotate();
 
-    		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
-    		{
-    			Detach();
-    		}
+			if(Input.GetButtonDown(playerDetach[p]) && isAttached)
+			{
+				Detach();
+			}
 
-    		if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
-    		{
-    			boost.ShipBoost();
-                BoostCooldown(); 
-    		}
-
-    		string whichMine = playerMine[p];
-            if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
-            {
+			if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
+				boost.ShipBoost ();
+				BoostCooldown ();         
+			}
+			string whichMine = playerMine[p];
+			if(Input.GetButtonDown(whichMine) && isAttached && !isMining){
                 Mine();
             }
-
-    		ParticleSystem.EmissionModule em = ps.emission;
-    		if (p == player.XPlayer1 || p == player.XPlayer2) {
-    			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
-    				em.enabled = true;
-    			} else {
-    				em.enabled = false;
-    			}
-    		} else {
-    			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
-    				em.enabled = true;
-    			} else {
-    				em.enabled = false;
-    			}
-    		}
+				
     			
             if(rb2D.velocity.magnitude > driftSpeed)
             {
@@ -163,6 +146,34 @@ public class Testplayer : MonoBehaviour {
                 rocketSound.Stop();
             }
         }
+
+		ParticleSystem.EmissionModule em;
+		if (p == player.XPlayer1 || p == player.XPlayer2) {
+			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
+			} else {
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
+			}
+		} else {
+			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
+			} else {
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
+			}
+		}
+			
 	}
 
 	void FixedUpdate()
@@ -223,8 +234,6 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 		currentAsteroid = null;
         isMining = false;
-		ParticleSystem.EmissionModule em = ps.emission;
-		em.enabled = true;
 	}
 
 	void Move()

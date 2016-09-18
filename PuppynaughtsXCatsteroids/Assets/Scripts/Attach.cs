@@ -24,7 +24,7 @@ public class Attach : MonoBehaviour {
         {
 			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached && !myPlayer.detaching)
             {
-                AttachToAsteroid(other.GetComponent<Asteroid>());
+                AttachToAsteroid(other.GetComponentInParent<Asteroid>());
  
             }
         }
@@ -34,8 +34,12 @@ public class Attach : MonoBehaviour {
     void AttachToAsteroid(Asteroid asteroid)
     {
 		Debug.Log ("Attaching");
-		ParticleSystem.EmissionModule em = myPlayer.ps.emission;
-		em.enabled = false;
+		ParticleSystem.EmissionModule em;
+		foreach(ParticleSystem sys in myPlayer.ps){
+			em = sys.emission;
+			em.enabled = false;
+		}
+
 		asteroid.sw.enabled = false;
         myPlayer.isAttached = true;
 		myPlayer.rb2D.mass += asteroid.rb2D.mass;
