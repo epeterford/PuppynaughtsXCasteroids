@@ -62,47 +62,20 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-<<<<<<< HEAD
 
 		
 	}
 
 	void FixedUpdate(){
 		if (!myPlayer) {
-=======
-		if (myPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
 				
 		}
 	}
-	void FixedUpdate(){
-		if (myPlayer) {
->>>>>>> cff6e9d991aa6ef078c30c396ce277cc1aab7e7d
-			if (rb2D.velocity.magnitude > maxSpeed) {
-				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
-			}
-		}
-
-		/*if (playerMounted != Testplayer.player.NoPlayer) {
-			Move ();
-		}*/
-	}
-
-	/*void Move() {
-		float acceleration = Input.GetAxis("Vertical");
-		rb2D.AddForce(transform.up * acceleration * accelerationForce);
-		Rotate();
-
-		if (rb2D.velocity.magnitude > maxSpeed) {
-			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
-		}
-		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
-	}*/
 		
 	void Rotate()	{
-		
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
 	public void StartMining()
