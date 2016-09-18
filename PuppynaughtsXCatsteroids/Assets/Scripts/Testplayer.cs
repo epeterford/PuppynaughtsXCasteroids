@@ -39,7 +39,10 @@ public class Testplayer : MonoBehaviour {
 		rb2D.angularDrag = 3;
 
 		ps = GetComponentInChildren<ParticleSystem> ();
+<<<<<<< HEAD
 
+=======
+>>>>>>> cff6e9d991aa6ef078c30c396ce277cc1aab7e7d
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
@@ -51,7 +54,10 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 	}
 		
+<<<<<<< HEAD
 
+=======
+>>>>>>> cff6e9d991aa6ef078c30c396ce277cc1aab7e7d
 	void Update () 
 	{
 
@@ -72,6 +78,10 @@ public class Testplayer : MonoBehaviour {
 		ParticleSystem.EmissionModule em = ps.emission;
 
 		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> cff6e9d991aa6ef078c30c396ce277cc1aab7e7d
 			em.enabled = true;
 		} else {
 			em.enabled = false;

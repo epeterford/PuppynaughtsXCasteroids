@@ -62,12 +62,24 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+<<<<<<< HEAD
 
 		
 	}
 
 	void FixedUpdate(){
 		if (!myPlayer) {
+=======
+		if (myPlayer) {
+			if (rb2D.velocity.magnitude > maxSpeed) {
+				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+			}
+				
+		}
+	}
+	void FixedUpdate(){
+		if (myPlayer) {
+>>>>>>> cff6e9d991aa6ef078c30c396ce277cc1aab7e7d
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
