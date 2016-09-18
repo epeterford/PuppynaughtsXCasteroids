@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Asteroid : MonoBehaviour {
@@ -8,7 +8,7 @@ public class Asteroid : MonoBehaviour {
 	public float maxSpeed;
 	public float accelerationForce = 10f;
 	public float startSpeed;
-	public bool playerMounted;
+	public Testplayer.player playerMounted;
 
 	public AsteroidSpawner mom;
 
@@ -49,8 +49,7 @@ public class Asteroid : MonoBehaviour {
 		startSpeed = Random.Range (.2f, maxSpeed);
 
 		rb2D.AddTorque (Random.Range (-3, 3));
-
-		playerMounted = false;
+		playerMounted = Testplayer.player.NoPlayer;
 
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
@@ -58,7 +57,7 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-		if (!playerMounted) {
+		if (playerMounted != Testplayer.player.NoPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
@@ -66,16 +65,17 @@ public class Asteroid : MonoBehaviour {
 		}
 	}
 	void FixedUpdate(){
-		if (!playerMounted) {
+		if (playerMounted != Testplayer.player.NoPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
-
-			if (playerMounted) {
-				//Move ();
-			}
 		}
+
+		/*if (playerMounted != Testplayer.player.NoPlayer) {
+			Move ();
+		}*/
 	}
+
 	/*void Move() {
 		float acceleration = Input.GetAxis("Vertical");
 		rb2D.AddForce(transform.up * acceleration * accelerationForce);
@@ -86,13 +86,15 @@ public class Asteroid : MonoBehaviour {
 		}
 		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
 	}*/
+		
 	void Rotate()	{
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
-    public void StartMining()
+	public void StartMining(Testplayer player)
     {
         Debug.Log("Starting " + Time.time);
 		StartCoroutine("MineAndDestroy");
+		playerMounted = player.p;
         Debug.Log("Before Mining finishes " + Time.time);
     
 	}
@@ -112,15 +114,26 @@ public class Asteroid : MonoBehaviour {
 			lastScale = currentScale;
 			yield return null;
 		}
+<<<<<<< HEAD
 		myPlayer.Revert();
 		mom.currentNum--;
+=======
+
+        myPlayer.isAttached = false;
+        myPlayer.currentAsteroid = null;
+        gm.SpawnPointsUI(this.gameObject.transform.position);
+
+		myPlayer.Revert();
+		mom.currentNum--;
+
+>>>>>>> 232e6a767e54b31c8f28a5fd40e509afeb5890d1
         Destroy(this.gameObject);
 
     }
 
-	public void Detatch(){
+	public void Detach(){
 		isMining = false;
-		playerMounted = false;
+		playerMounted = Testplayer.player.NoPlayer;
 		myPlayer = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();

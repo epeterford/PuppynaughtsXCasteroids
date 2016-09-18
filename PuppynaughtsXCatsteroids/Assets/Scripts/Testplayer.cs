@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 public class Testplayer : MonoBehaviour {
 
-	public enum player {Player1 = 0, Player2 = 1};
-	public Dictionary<string, string> playerHorizontalControls = new Dictionary<string, string>();
-	public Dictionary<string, string> playerVerticalControls = new Dictionary<string, string>();
+	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2};
+	public Dictionary<player, string> playerHorizontalControls = new Dictionary<player, string>();
+	public Dictionary<player, string> playerVerticalControls = new Dictionary<player, string>();
+	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
 	public player p;
 	float maxBoost;
 	public float maxSpeed;
@@ -36,30 +37,34 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		playerHorizontalControls.Add ("Player1", "P1 Horizontal");
-		playerHorizontalControls.Add ("Player2", "P2 Horizontal");
-		playerVerticalControls.Add ("Player1", "P1 Vertical");
-		playerVerticalControls.Add ("Player2", "P2 Vertical");
+		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
+		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
+		playerVerticalControls.Add (player.Player1, "P1 Vertical");
+		playerVerticalControls.Add (player.Player2, "P2 Vertical");
+		playerMine.Add (player.Player1, "P1 Mine");
+		playerMine.Add (player.Player2, "P2 Mine");
 
 		isBoosting = false;
 		isAttached = false;
 	}
 
 	// Update is called once per frame
-	void Update () {
-
-		Rotate();
-		
-        if(Input.GetButtonDown("Detach") && isAttached)
-        {
-            Detatch();
-        }
-        if(Input.GetButtonDown("Mine") && isAttached)
-        {
-			if (!currentAsteroid.isMining) {
-				Mine ();
-			}
-        }
+	void Update () 
+	{
+		if(!isAttached)
+		{
+			Rotate();
+		}
+		if(Input.GetButtonDown("Detach") && isAttached)
+		{
+			Detach();
+		}
+		string whichMine = playerMine[p];
+		float mine = Input.GetAxis (whichMine);
+		if(mine != 0 && isAttached)
+		{
+			Mine();
+		}
 	}
 
 	void FixedUpdate()
@@ -81,13 +86,13 @@ public class Testplayer : MonoBehaviour {
         if(currentAsteroid)
         {
             Asteroid asteroid = currentAsteroid;
-            asteroid.StartMining();
+            asteroid.StartMining(this);
         }
     }
 
-	void Detatch(){
+	void Detach(){
 		Revert ();
-		currentAsteroid.Detatch ();
+		currentAsteroid.Detach ();
 	}
 
 	public void Revert(){
@@ -119,13 +124,13 @@ public class Testplayer : MonoBehaviour {
 		currentSpeed = rb2D.velocity.magnitude;
 
 		// Vertical axis for this player
-		string whichVerticalAxis = playerVerticalControls[p.ToString()];
+		string whichVerticalAxis = playerVerticalControls[p];
 		float verticalAxis = Input.GetAxis (whichVerticalAxis);
 
 		if (currentSpeed > maxSpeed && verticalAxis !=0)
 		{
 			Debug.Log("Clamping");
-			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
+			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
 		}
 		else
 		{
@@ -137,7 +142,7 @@ public class Testplayer : MonoBehaviour {
 	void Rotate()
 	{
 		// Horizontal axis for this player
-		string whichHorizontalAxis = playerHorizontalControls[p.ToString()];
+		string whichHorizontalAxis = playerHorizontalControls[p];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
 		transform.Rotate(0,0,horizontalAxis*Time.deltaTime*-180);
 	}
