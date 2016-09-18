@@ -49,9 +49,12 @@ public class Testplayer : MonoBehaviour {
     public float lowPitchRange = .95f;
     public float highPitchRange = 1.05f;
 	// Use this for initialization
+
+	public AudioManager am;
+
 	void Start () 
     {
-
+		am = GameObject.FindGameObjectWithTag ("Audio").GetComponent<AudioManager> ();
         gm = FindObjectOfType<GameManager>();
 		maxSpeed = 6;
 		speed = 15;
@@ -152,28 +155,32 @@ public class Testplayer : MonoBehaviour {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = true;
-						//rocketSound.Play();
+
 					}
+					rocketSound.Play();
 				} else {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = false;
-						//rocketSound.Stop();
+
 					}
+					rocketSound.Stop();
 				}
 			} else {
 				if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached && !boost.isBoosting) {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = true;
-						//rocketSound.Play();
+
 					}
+					rocketSound.Play();
 				} else {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = false;
-						//rocketSound.Stop();
+
 					}
+					rocketSound.Stop();
 				}
 			}
 
@@ -181,8 +188,9 @@ public class Testplayer : MonoBehaviour {
 				foreach (ParticleSystem sys in boostP) {
 					em = sys.emission;
 					em.enabled = true;
-					//rocketSound.Play();
+
 				}
+				rocketSound.Play();
 			} else {
 				foreach (ParticleSystem sys in boostP) {
 					em = sys.emission;
