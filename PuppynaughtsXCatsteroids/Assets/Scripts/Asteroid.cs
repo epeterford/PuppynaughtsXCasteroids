@@ -114,24 +114,16 @@ public class Asteroid : MonoBehaviour {
 			lastScale = currentScale;
 			yield return null;
 		}
-<<<<<<< HEAD
-		myPlayer.Revert();
-		mom.currentNum--;
-=======
-
-        myPlayer.isAttached = false;
-        myPlayer.currentAsteroid = null;
-        gm.SpawnPointsUI(this.gameObject.transform.position);
+            
 
 		myPlayer.Revert();
 		mom.currentNum--;
-
->>>>>>> 232e6a767e54b31c8f28a5fd40e509afeb5890d1
         Destroy(this.gameObject);
 
     }
 
-	public void Detach(){
+	public void Detach()
+    {
 		isMining = false;
 		playerMounted = Testplayer.player.NoPlayer;
 		myPlayer = null;
