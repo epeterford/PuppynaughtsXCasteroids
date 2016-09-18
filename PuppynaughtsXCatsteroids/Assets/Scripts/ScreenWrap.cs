@@ -64,7 +64,6 @@ public class ScreenWrap : MonoBehaviour {
 		}
 
 		viewportsPosition = cam.WorldToViewportPoint (transform.position);
-
 		Vector3 newPosition = transform.position;
 
 		if (!isWrappingX && (viewportsPosition.x > 1 || viewportsPosition.x < 0)) {
