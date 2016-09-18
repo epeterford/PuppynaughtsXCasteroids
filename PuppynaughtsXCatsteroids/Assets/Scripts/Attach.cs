@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Attach : MonoBehaviour {
 
-    Testplayer myPlayer; 
+    Testplayer myPlayer;
+
 	// Use this for initialization
 	void Start () 
     {

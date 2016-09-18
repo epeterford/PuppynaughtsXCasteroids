@@ -39,6 +39,12 @@ public class Testplayer : MonoBehaviour {
 
 	Boost boost;
 
+ 
+    public AudioSource playerAudio; 
+    public AudioSource rocketSound;
+    public AudioClip[] playerSounds; 
+    public float lowPitchRange = .95f;
+    public float highPitchRange = 1.05f;
 	// Use this for initialization
 	void Start () 
     {
@@ -94,10 +100,7 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-<<<<<<< HEAD
 		//Debug.Log (rb2D.velocity.magnitude);
-=======
->>>>>>> be676a072b37ec022f1bc0c94a805b53421807c0
 		Rotate();
 
 		if(Input.GetButtonDown(playerDetach[p]) && isAttached)
@@ -125,6 +128,15 @@ public class Testplayer : MonoBehaviour {
 			em.enabled = false;
 		}
 			
+        if(rb2D.velocity.magnitude > driftSpeed)
+        {
+            rocketSound.Play();
+
+        }
+        else
+        {
+            rocketSound.Stop();
+        }
 	}
 
 	void FixedUpdate()
@@ -237,7 +249,18 @@ public class Testplayer : MonoBehaviour {
 			}
 		}
 	}
+    public void PlayRandomPlayerAudio()
+    {
+        int randomIndex = Random.Range(0, playerSounds.Length);
 
+        float randomPitch = Random.Range (lowPitchRange, highPitchRange);
+
+        playerAudio.clip = playerSounds[randomIndex];
+        playerAudio.pitch = randomPitch;
+
+
+        playerAudio.Play();
+    }
 	void OnCollisionEnter2D(Collision2D other){
 		if (other.gameObject.tag == "Player" && !collisionCool) {
 			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
