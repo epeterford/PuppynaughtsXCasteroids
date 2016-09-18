@@ -34,15 +34,22 @@ public class Asteroid : MonoBehaviour {
 
 	bool collisionCool;
 
+	public ScreenWrap sw;
+
+	float driftSpeed;
+
 	// Use this for initialization
 	void Start () 
     {
+		sw = GetComponent<ScreenWrap> ();
         gm = FindObjectOfType<GameManager>();
         myPlayer = FindObjectOfType<Testplayer>();
 		scale = Random.Range (.3f, 5);
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
+
+		driftSpeed = Random.Range (.2f, 2f);
 
 		mr = GetComponent<MeshRenderer> ();
 
@@ -84,11 +91,20 @@ public class Asteroid : MonoBehaviour {
 
 		if (!myPlayer)
         {
+			
 			if (rb2D.velocity.magnitude > maxSpeed) 
             {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
-				
+
+			if (rb2D.velocity.magnitude > driftSpeed)
+			{
+				Vector3 easeVelocity = rb2D.velocity;
+				easeVelocity.y *= .999f;
+				easeVelocity.z = 0.0f;
+				easeVelocity.x *= .999f;
+				rb2D.velocity = easeVelocity; 
+			}
 		}
 	}
 		
@@ -156,6 +172,8 @@ public class Asteroid : MonoBehaviour {
     {
 		isMining = false;
 		myPlayer = null;
+		sw.enabled = true;
+		transform.parent = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.mass = currentScale;

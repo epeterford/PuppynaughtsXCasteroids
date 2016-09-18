@@ -29,12 +29,14 @@ public class Boost : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-
+		timeSinceBoost += Time.deltaTime;
+		if (timeSinceBoost > 1.5) {
+			isBoosting = false;
+		}
 	}
 	
 	void FixedUpdate()
 	{
-		ShipBoost();
 		Move();
 	}
 	
@@ -42,7 +44,7 @@ public class Boost : MonoBehaviour {
 	{
 		
 		if (isBoosting == true) {
-			if (timeSinceBoost > 1) {
+			if (timeSinceBoost > .5f) {
 				// Boost will cut off when timeSinceBoost == 1.5, so this formula ramps down velocity to just under 3 (maxSpeed).
 				player.rb2D.velocity = new Vector2((maxBoost/Mathf.Pow(timeSinceBoost,6))*transform.up.x,(maxBoost/Mathf.Pow(timeSinceBoost,6))*transform.up.y);
 			} else {
@@ -52,13 +54,9 @@ public class Boost : MonoBehaviour {
 		}
 	}
 
-	void ShipBoost()
+	public void ShipBoost()
 	{
-		timeSinceBoost += Time.deltaTime;
-		if (timeSinceBoost > 1.5) {
-			isBoosting = false;
-		}
-		if (Input.GetKeyDown(KeyCode.Space) && timeSinceBoost > 3 && !player.isAttached) {
+		if (timeSinceBoost > 3) {
 			Debug.Log ("isBoosting");
 			timeSinceBoost = 0;
 			isBoosting = true;
