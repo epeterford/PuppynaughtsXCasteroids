@@ -5,13 +5,15 @@ using System.Collections.Generic;
 
 public class Testplayer : MonoBehaviour {
 
-	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2};
+	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2, XPlayer1 = 3, XPlayer2 = 4};
 
 	public Dictionary<player, string> playerHorizontalControls = new Dictionary<player, string>();
 	public Dictionary<player, string> playerVerticalControls = new Dictionary<player, string>();
 	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
 	public Dictionary<player, string> playerBoost = new Dictionary<player, string> ();
 	public Dictionary<player, string> playerDetach = new Dictionary<player, string> ();
+	public Dictionary<player, string> playerVerticalPos = new Dictionary<player, string>();
+	public Dictionary<player, string> playerVerticalNeg = new Dictionary<player, string>();
 
 	public player p;
 	float maxBoost;
@@ -67,6 +69,18 @@ public class Testplayer : MonoBehaviour {
 		playerBoost.Add (player.Player2, "P2 Boost");
 		playerDetach.Add (player.Player1, "P1 Detach");
 		playerDetach.Add (player.Player2, "P2 Detach");
+		playerHorizontalControls.Add (player.XPlayer1, "P1 XBOX Hori");
+		playerHorizontalControls.Add (player.XPlayer2, "P2 XBOX Hori");
+		playerVerticalPos.Add (player.XPlayer1, "P1 R Trigger");
+		playerVerticalPos.Add (player.XPlayer2, "P2 R Trigger");
+		playerVerticalNeg.Add (player.XPlayer1, "P1 L Trigger");
+		playerVerticalNeg.Add (player.XPlayer2, "P2 L Trigger");
+		playerMine.Add (player.XPlayer1, "P1 XBOX A");
+		playerMine.Add (player.XPlayer2, "P2 XBOX A");
+		playerBoost.Add (player.XPlayer1, "P1 L Bumper");
+		playerBoost.Add (player.XPlayer2, "P2 L Bumper");
+		playerDetach.Add (player.XPlayer1, "P1 XBOX B");
+		playerDetach.Add (player.XPlayer2, "P2 XBOX B");
 
 		isBoosting = false;
 		isAttached = false;
@@ -109,11 +123,18 @@ public class Testplayer : MonoBehaviour {
         }
 
 		ParticleSystem.EmissionModule em = ps.emission;
-
-		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
-			em.enabled = true;
+		if (p == player.XPlayer1 || p == player.XPlayer2) {
+			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
+				em.enabled = true;
+			} else {
+				em.enabled = false;
+			}
 		} else {
-			em.enabled = false;
+			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
+				em.enabled = true;
+			} else {
+				em.enabled = false;
+			}
 		}
 			
 	}
@@ -185,16 +206,25 @@ public class Testplayer : MonoBehaviour {
 
 		currentSpeed = rb2D.velocity.magnitude;
 
-		// Vertical axis for this player
-		string whichVerticalAxis = playerVerticalControls[p];
-		float verticalAxis = Input.GetAxis (whichVerticalAxis);
+		float verticalAxis;
 
-		if (currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
-		{
-			rb2D.velocity = (verticalAxis > 0) ? Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f) : Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .5f);
+		// Vertical axis for this player
+		if (p == player.XPlayer1 || p == player.XPlayer2) {
+			verticalAxis = Input.GetAxis(playerVerticalPos[p]) - Input.GetAxis(playerVerticalNeg[p]);
+		} else{
+			string whichVerticalAxis = playerVerticalControls[p];
+			verticalAxis = Input.GetAxis (whichVerticalAxis);
 		}
-		else
-		{
+
+		if (verticalAxis < 0) {
+			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting) {
+				Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .35f);
+			} else {
+				rb2D.AddForce(transform.up*verticalAxis*speed);
+			}
+		} else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting){
+			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
+		}else{
 			rb2D.AddForce(transform.up*verticalAxis*speed);
 
 		}
