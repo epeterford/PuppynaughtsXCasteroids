@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour {
 	{
 		if(dogScore.fillAmount>catScore.fillAmount)
 		{
+			Debug.Log ("Dog Scores");
 			dogScore.transform.SetAsLastSibling();
 		}
 		else
