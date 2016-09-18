@@ -31,8 +31,8 @@ public class GameManager : MonoBehaviour {
 		PlayerPrefs.SetInt("CommonGoal", 0);
 		dogScore.fillAmount = 0f;
 		catScore.fillAmount = 0f;
-		dogScoreValue = 98f;
-		catScoreValue = 98f;
+		dogScoreValue = 0f;
+		catScoreValue = 0f;
 		timeLeft = 60;
 		commonGoal = 200;
 		timeToStart = 5;
@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour {
 	{
 		if(dogScore.fillAmount>catScore.fillAmount)
 		{
+			Debug.Log ("Dog Scores");
 			dogScore.transform.SetAsLastSibling();
 		}
 		else
