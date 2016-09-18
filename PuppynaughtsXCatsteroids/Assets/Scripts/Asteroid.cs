@@ -23,6 +23,12 @@ public class Asteroid : MonoBehaviour {
 
 	public Transform attatchment;
 
+	public GameObject boom;
+
+	public GameObject badLand;
+	public GameObject noseHit;
+
+	bool collisionCool;
 
 	// Use this for initialization
 	void Start () 
@@ -32,6 +38,8 @@ public class Asteroid : MonoBehaviour {
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
+
+		collisionCool = false;
 
 		rb2D = GetComponent<Rigidbody2D>();
 
@@ -84,6 +92,7 @@ public class Asteroid : MonoBehaviour {
 		//transform.Translate(Vector3.up * Input.GetAxis("Vertical") * Time.deltaTime * playerSpeed);
 	}*/
 	void Rotate()	{
+		
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
     public void StartMining()
@@ -92,6 +101,12 @@ public class Asteroid : MonoBehaviour {
 		StartCoroutine("MineAndDestroy");
         Debug.Log("Before Mining finishes " + Time.time);
     
+	}
+
+	void OnCollisionEnter2D(Collision2D other){
+		if (other.gameObject.tag == "Nose" && !collisionCool) {
+			//other.contacts[0]
+		}
 	}
 		
 
@@ -107,10 +122,17 @@ public class Asteroid : MonoBehaviour {
 			currentScale = transform.localScale.x;
 			transform.position = Vector2.MoveTowards (transform.position, mp.position-mp.up*(currentScale/2), lastScale - currentScale);
 			lastScale = currentScale;
+			myPlayer.rb2D.mass = 1 + scale;
 			yield return null;
 		}
 		myPlayer.Revert();
 		mom.currentNum--;
+		GameObject ps = Instantiate (boom, transform.position, Quaternion.identity) as GameObject;
+		ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
+		sm.radius = .3f * scale;
+		ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
+		em.enabled = true;
+
         Destroy(this.gameObject);
 
     }

@@ -21,6 +21,7 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
+	public ParticleSystem ps;
 
 	// Use this for initialization
 	void Start () 
@@ -35,6 +36,8 @@ public class Testplayer : MonoBehaviour {
 		attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
+
+		ps = GetComponentInChildren<ParticleSystem> ();
 
 		playerHorizontalControls.Add ("Player1", "P1 Horizontal");
 		playerHorizontalControls.Add ("Player2", "P2 Horizontal");
@@ -60,6 +63,16 @@ public class Testplayer : MonoBehaviour {
 				Mine ();
 			}
         }
+
+
+
+		ParticleSystem.EmissionModule em = ps.emission;
+
+		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p.ToString()])) > .01 && !isAttached) {
+			em.enabled = true;
+		} else {
+			em.enabled = false;
+		}
 	}
 
 	void FixedUpdate()
@@ -96,6 +109,8 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 		currentAsteroid = null;
 
+		ParticleSystem.EmissionModule em = ps.emission;
+		em.enabled = true;
 	}
 
 	void Move()
@@ -139,7 +154,15 @@ public class Testplayer : MonoBehaviour {
 		// Horizontal axis for this player
 		string whichHorizontalAxis = playerHorizontalControls[p.ToString()];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
-		transform.Rotate(0,0,horizontalAxis*Time.deltaTime*-180);
+		if (!isAttached) {
+			transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
+		} else {
+			if (currentAsteroid.currentScale > 1) {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180 / currentAsteroid.currentScale);
+			} else {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
+			}
+		}
 	}
 
 
