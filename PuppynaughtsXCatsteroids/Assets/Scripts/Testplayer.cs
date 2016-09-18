@@ -86,7 +86,7 @@ public class Testplayer : MonoBehaviour {
         if(currentAsteroid)
         {
             Asteroid asteroid = currentAsteroid;
-            asteroid.StartMining(this);
+            asteroid.StartMining();
         }
     }
 

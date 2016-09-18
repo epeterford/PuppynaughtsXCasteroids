@@ -8,7 +8,6 @@ public class Asteroid : MonoBehaviour {
 	public float maxSpeed;
 	public float accelerationForce = 10f;
 	public float startSpeed;
-	public Testplayer.player playerMounted;
 
 	public AsteroidSpawner mom;
 
@@ -49,15 +48,13 @@ public class Asteroid : MonoBehaviour {
 		startSpeed = Random.Range (.2f, maxSpeed);
 
 		rb2D.AddTorque (Random.Range (-3, 3));
-		playerMounted = Testplayer.player.NoPlayer;
-
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
     }
 	// Update is called once per frame
 	void Update () 
     {
-		if (playerMounted != Testplayer.player.NoPlayer) {
+		if (myPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
@@ -65,7 +62,7 @@ public class Asteroid : MonoBehaviour {
 		}
 	}
 	void FixedUpdate(){
-		if (playerMounted != Testplayer.player.NoPlayer) {
+		if (myPlayer) {
 			if (rb2D.velocity.magnitude > maxSpeed) {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
@@ -90,11 +87,10 @@ public class Asteroid : MonoBehaviour {
 	void Rotate()	{
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
-	public void StartMining(Testplayer player)
+	public void StartMining()
     {
         Debug.Log("Starting " + Time.time);
 		StartCoroutine("MineAndDestroy");
-		playerMounted = player.p;
         Debug.Log("Before Mining finishes " + Time.time);
     
 	}
@@ -125,7 +121,6 @@ public class Asteroid : MonoBehaviour {
 	public void Detach()
     {
 		isMining = false;
-		playerMounted = Testplayer.player.NoPlayer;
 		myPlayer = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();
