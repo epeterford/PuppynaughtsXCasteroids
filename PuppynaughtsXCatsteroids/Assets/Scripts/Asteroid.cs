@@ -102,9 +102,7 @@ public class Asteroid : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D other){
-		Debug.Log (other.gameObject.tag);
-		if (other.gameObject.tag == "Nose" && !collisionCool) {
-			Debug.Log ("Colliding");
+		if (other.gameObject.tag == "Player" && !collisionCool) {
 			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
 			if(playerTemp.rb2D.velocity.magnitude >= 3){
 				GameObject ps = Instantiate (noseHit, other.contacts[0].point, Quaternion.identity) as GameObject;

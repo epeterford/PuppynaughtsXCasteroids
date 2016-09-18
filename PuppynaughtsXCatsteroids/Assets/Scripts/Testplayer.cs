@@ -187,7 +187,7 @@ public class Testplayer : MonoBehaviour {
 			if(playerTemp.rb2D.velocity.magnitude >= 3){
 				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.identity) as GameObject;
 				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
-				sm.radius = .2f;
+				sm.radius = 1f;
 				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
 				StartCoroutine ("hitCool");
 			}
