@@ -24,6 +24,8 @@ public class Testplayer : MonoBehaviour {
 
 	public ParticleSystem ps;
 
+	Boost boost;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -39,6 +41,8 @@ public class Testplayer : MonoBehaviour {
 		rb2D.angularDrag = 3;
 
 		ps = GetComponentInChildren<ParticleSystem> ();
+
+		boost = GetComponent<Boost> ();
 
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
@@ -144,7 +148,7 @@ public class Testplayer : MonoBehaviour {
 		string whichVerticalAxis = playerVerticalControls[p];
 		float verticalAxis = Input.GetAxis (whichVerticalAxis);
 
-		if (currentSpeed > maxSpeed && verticalAxis !=0)
+		if (currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
 		{
 			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
 		}
