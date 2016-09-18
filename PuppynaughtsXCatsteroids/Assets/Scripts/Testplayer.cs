@@ -32,7 +32,7 @@ public class Testplayer : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
-	public ParticleSystem ps;
+	public ParticleSystem[] ps;
 
 	public GameObject playerHit;
     public GameObject PointTextPrefab;
@@ -59,7 +59,7 @@ public class Testplayer : MonoBehaviour {
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
-		ps = GetComponentInChildren<ParticleSystem> ();
+		ps = GetComponentsInChildren<ParticleSystem> ();
 
 		boost = GetComponent<Boost> ();
 
@@ -115,34 +115,40 @@ public class Testplayer : MonoBehaviour {
 			Detach();
 		}
 
-		if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
-		{
-			boost.ShipBoost();
-<<<<<<< HEAD
+		if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
+			boost.ShipBoost ();
+			BoostCooldown ();         
 		}
-=======
-            BoostCooldown();         
-		}*/
->>>>>>> bb78c27e449091ad623fd7cbfa34914cb68a3312
-
 		string whichMine = playerMine[p];
         if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
         {
             Mine();
         }
 
-		ParticleSystem.EmissionModule em = ps.emission;
+		ParticleSystem.EmissionModule em;
 		if (p == player.XPlayer1 || p == player.XPlayer2) {
 			if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached) {
-				em.enabled = true;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
 			} else {
-				em.enabled = false;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
 			}
 		} else {
 			if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached) {
-				em.enabled = true;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = true;
+				}
 			} else {
-				em.enabled = false;
+				foreach (ParticleSystem sys in ps) {
+					em = sys.emission;
+					em.enabled = false;
+				}
 			}
 		}
 			
@@ -203,8 +209,6 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 		currentAsteroid = null;
         isMining = false;
-		ParticleSystem.EmissionModule em = ps.emission;
-		em.enabled = true;
 	}
 
 	void Move()
