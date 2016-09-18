@@ -57,11 +57,11 @@ public class Testplayer : MonoBehaviour {
 		
         if(Input.GetButtonDown("Detach") && isAttached)
         {
-            Detatch();
+            Detach();
         }
 		string whichMine = playerMine[p];
-		float mine = Input.GetButtonDown (whichMine);
-		if(Input.GetButtonDown(mine) && isAttached && !currentAsteroid.isMining)
+		bool mine = Input.GetButtonDown (whichMine);
+		if(mine && isAttached && !currentAsteroid.isMining)
         {
 			Mine ();
         }
@@ -70,7 +70,7 @@ public class Testplayer : MonoBehaviour {
 
 		ParticleSystem.EmissionModule em = ps.emission;
 
-		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p.ToString()])) > .01 && !isAttached) {
+		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
 			em.enabled = true;
 		} else {
 			em.enabled = false;
