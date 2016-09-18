@@ -10,6 +10,10 @@ public class GameManager : MonoBehaviour {
     public Text roundTimer; 
     public float timeLeft; 
     public GameObject scoreUI;
+    public Image dogCoolDown;
+    public Image catCoolDown; 
+    public bool catNeedsCoolDown = false;
+    public bool dogNeedsCoolDown = false;
     public float commonGoal;
     static bool commonGoalMet = false;
 	// Use this for initialization
@@ -32,6 +36,22 @@ public class GameManager : MonoBehaviour {
 
         CheckIfCommonGoalMet();
 
+        if(catNeedsCoolDown)
+        {
+            catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+            if(catCoolDown.fillAmount>=1)
+            {
+                catNeedsCoolDown = false;
+            }
+        }
+        if(dogNeedsCoolDown)
+        {
+            dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+            if(dogCoolDown.fillAmount>=1)
+            {
+                dogNeedsCoolDown = false;
+            }
+        }
 	}
 
     void UpdateCurrentScore()
@@ -89,6 +109,14 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    public void CatCoolDown()
+    {
+        catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+    }
+    public void DogCoolDown()
+    {
+        dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
+    }
     void GameOver()
     {
         //SceneManager.LoadScene("GameOver");

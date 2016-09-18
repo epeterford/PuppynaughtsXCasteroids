@@ -15,6 +15,9 @@ public class Testplayer : MonoBehaviour {
 	public Dictionary<player, string> playerVerticalPos = new Dictionary<player, string>();
 	public Dictionary<player, string> playerVerticalNeg = new Dictionary<player, string>();
 
+    public Image catBoostBar;
+    public Image dogBoostBar; 
+    public GameManager gm; 
 	public player p;
 	float maxBoost;
 	public float maxSpeed;
@@ -41,6 +44,7 @@ public class Testplayer : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        gm = FindObjectOfType<GameManager>();
 		maxSpeed = 6;
 		speed = 15;
 
@@ -114,7 +118,12 @@ public class Testplayer : MonoBehaviour {
 		if(Input.GetButtonDown(playerBoost[p]) && !isAttached)
 		{
 			boost.ShipBoost();
+<<<<<<< HEAD
 		}
+=======
+            BoostCooldown();         
+		}*/
+>>>>>>> bb78c27e449091ad623fd7cbfa34914cb68a3312
 
 		string whichMine = playerMine[p];
         if(Input.GetButtonDown(whichMine) && isAttached && !isMining)
@@ -174,6 +183,19 @@ public class Testplayer : MonoBehaviour {
 
 	}
 
+    void BoostCooldown()
+    {
+        
+        if(p == player.Player1)
+        {
+            gm.dogNeedsCoolDown = true;
+        }
+        else if(p == player.Player2)
+        {
+            gm.catNeedsCoolDown = true;
+        }
+
+    }
 	public void Revert(){
         Debug.Log("Reverting");
 		maxSpeed = 6;
