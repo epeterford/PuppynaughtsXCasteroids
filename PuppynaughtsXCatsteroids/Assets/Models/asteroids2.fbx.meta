@@ -6,10 +6,20 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: asteroid2_MeshPart0
+    100004: asteroid2_MeshPart1
     400000: //RootNode
+    400002: asteroid2_MeshPart0
+    400004: asteroid2_MeshPart1
     2300000: //RootNode
+    2300002: asteroid2_MeshPart0
+    2300004: asteroid2_MeshPart1
     3300000: //RootNode
+    3300002: asteroid2_MeshPart0
+    3300004: asteroid2_MeshPart1
     4300000: asteroid2Baked
+    4300002: asteroid2_MeshPart0
+    4300004: asteroid2_MeshPart1
   materials:
     importMaterials: 1
     materialName: 0

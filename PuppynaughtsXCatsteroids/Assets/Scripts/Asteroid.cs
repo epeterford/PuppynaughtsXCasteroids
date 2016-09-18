@@ -34,9 +34,14 @@ public class Asteroid : MonoBehaviour {
 
 	bool collisionCool;
 
+	public ScreenWrap sw;
+
+	float driftSpeed;
+
 	// Use this for initialization
 	void Start () 
     {
+		sw = GetComponent<ScreenWrap> ();
         gm = FindObjectOfType<GameManager>();
         myPlayer = FindObjectOfType<Testplayer>();
 		scale = Random.Range (.3f, 5);
@@ -44,7 +49,9 @@ public class Asteroid : MonoBehaviour {
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
 
-		mr = GetComponent<MeshRenderer> ();
+		driftSpeed = Random.Range (.2f, 2f);
+
+		mr = GetComponentInChildren<MeshRenderer> ();
 
 		killTime = 0;
 
@@ -62,7 +69,7 @@ public class Asteroid : MonoBehaviour {
 
 		startSpeed = Random.Range (.2f, maxSpeed);
 
-		rb2D.AddTorque (Random.Range (-3, 3));
+		rb2D.AddTorque (Random.Range (-10, 10)*scale);
 		rb2D.AddForce (maxSpeed * 20 * transform.up);
 
     }
@@ -84,11 +91,20 @@ public class Asteroid : MonoBehaviour {
 
 		if (!myPlayer)
         {
+			
 			if (rb2D.velocity.magnitude > maxSpeed) 
             {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
-				
+
+			if (rb2D.velocity.magnitude > driftSpeed)
+			{
+				Vector3 easeVelocity = rb2D.velocity;
+				easeVelocity.y *= .999f;
+				easeVelocity.z = 0.0f;
+				easeVelocity.x *= .999f;
+				rb2D.velocity = easeVelocity; 
+			}
 		}
 	}
 		
@@ -156,6 +172,8 @@ public class Asteroid : MonoBehaviour {
     {
 		isMining = false;
 		myPlayer = null;
+		sw.enabled = true;
+		transform.parent = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.mass = currentScale;
@@ -167,17 +185,19 @@ public class Asteroid : MonoBehaviour {
         {
             // dog scores
             Debug.Log("DogScores!");
-            gm.DogScores(points/200);
+            gm.DogScores(points);
         }
         else if(myPlayer.p == Testplayer.player.Player2)
         {
             // cat scores
             Debug.Log("CatScores!");
-            gm.CatScores(points/200);
+            gm.CatScores(points);
            
         }
+
+        myPlayer.InitPointText(Mathf.Round(points).ToString());
         Debug.Log("Points Given: " + points);
-        Debug.Log("Actual Points Given: " + points/200);
+        Debug.Log("Actual Points Given: " + points);
 
     }
 }

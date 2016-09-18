@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Attach : MonoBehaviour {
 
-    Testplayer myPlayer; 
+    Testplayer myPlayer;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -21,9 +22,9 @@ public class Attach : MonoBehaviour {
     {
 		if(other.tag=="Asteroid" && !myPlayer.isAttached)
         {
-			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached)
+			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached && !myPlayer.detaching)
             {
-                AttachToAsteroid(other.GetComponent<Asteroid>());
+                AttachToAsteroid(other.GetComponentInParent<Asteroid>());
  
             }
         }
@@ -32,9 +33,14 @@ public class Attach : MonoBehaviour {
 
     void AttachToAsteroid(Asteroid asteroid)
     {
-		ParticleSystem.EmissionModule em = myPlayer.ps.emission;
-		em.enabled = false;
+		Debug.Log ("Attaching");
+		ParticleSystem.EmissionModule em;
+		foreach(ParticleSystem sys in myPlayer.ps){
+			em = sys.emission;
+			em.enabled = false;
+		}
 
+		asteroid.sw.enabled = false;
         myPlayer.isAttached = true;
 		myPlayer.rb2D.mass += asteroid.rb2D.mass;
 		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
