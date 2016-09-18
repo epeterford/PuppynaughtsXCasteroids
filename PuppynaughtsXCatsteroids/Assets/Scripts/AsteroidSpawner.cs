@@ -4,10 +4,13 @@ using System.Collections;
 public class AsteroidSpawner : MonoBehaviour {
 
 	public float maxNum;
+	public float currentNum;
 	float timer;
 	bool readySpawn;
 	float spawnRadius;
 	Vector3 center;
+
+	bool full;
 
 	public GameObject asteroid;
 
@@ -16,11 +19,20 @@ public class AsteroidSpawner : MonoBehaviour {
 		timer = 1;
 		center = new Vector3 (0, 0, 0);
 		StartCoroutine ("spawnTimer");
+		maxNum = 12;
+		currentNum = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(currentNum >= maxNum){
+			full = true;
+		}
+		if(currentNum < maxNum && full){
+			StartCoroutine("spawnTimer");
+			full = false;
+		}
+			
 	}
 
 	IEnumerator spawnTimer(){
@@ -30,7 +42,9 @@ public class AsteroidSpawner : MonoBehaviour {
 
 		spawn();
 
-		StartCoroutine ("spawnTimer");
+		if (!full) {
+			StartCoroutine ("spawnTimer");
+		}
 	}
 
 	void spawn(){
@@ -54,8 +68,13 @@ public class AsteroidSpawner : MonoBehaviour {
 
 		}
 
+		rock.GetComponent<Asteroid>().mom = GetComponent<AsteroidSpawner>();
+
 		rock.transform.eulerAngles += new Vector3 (0, 0, Random.Range (-20, 20));
+
+		currentNum++;
 
 
 	}
+
 }
