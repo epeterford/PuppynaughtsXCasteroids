@@ -39,12 +39,15 @@ public class Testplayer : MonoBehaviour {
 		rb2D.angularDrag = 3;
 
 		ps = GetComponentInChildren<ParticleSystem> ();
+<<<<<<< HEAD
 
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
 		playerVerticalControls.Add (player.Player2, "P2 Vertical");
 
+=======
+>>>>>>> e734fe79b0f960f4f6f5e257c2c9ebf98d64ac69
 		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
 		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
 		playerVerticalControls.Add (player.Player1, "P1 Vertical");
@@ -56,6 +59,7 @@ public class Testplayer : MonoBehaviour {
 		isAttached = false;
 	}
 
+<<<<<<< HEAD
 
 	void Update () 
 	{
@@ -77,6 +81,29 @@ public class Testplayer : MonoBehaviour {
 		ParticleSystem.EmissionModule em = ps.emission;
 
 		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p])) > .01 && !isAttached) {
+=======
+	// Update is called once per frame
+	void Update () {
+
+		Rotate();
+		
+        if(Input.GetButtonDown("Detach") && isAttached)
+        {
+            Detatch();
+        }
+		string whichMine = playerMine[p];
+		float mine = Input.GetButtonDown (whichMine);
+		if(Input.GetButtonDown(mine) && isAttached && !currentAsteroid.isMining)
+        {
+			Mine ();
+        }
+
+
+
+		ParticleSystem.EmissionModule em = ps.emission;
+
+		if (Mathf.Abs(Input.GetAxis(playerVerticalControls[p.ToString()])) > .01 && !isAttached) {
+>>>>>>> e734fe79b0f960f4f6f5e257c2c9ebf98d64ac69
 			em.enabled = true;
 		} else {
 			em.enabled = false;
@@ -102,7 +129,7 @@ public class Testplayer : MonoBehaviour {
         if(currentAsteroid)
         {
             Asteroid asteroid = currentAsteroid;
-            asteroid.StartMining(this);
+            asteroid.StartMining();
         }
     }
 
