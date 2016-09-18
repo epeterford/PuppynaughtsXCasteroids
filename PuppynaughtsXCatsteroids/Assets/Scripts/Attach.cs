@@ -9,10 +9,6 @@ public class Attach : MonoBehaviour {
     {
         myPlayer = transform.parent.GetComponent<Testplayer>();
 
-        if(myPlayer)
-        {
-            Debug.Log("FOund Player");
-        }
 	}
 	
 	// Update is called once per frame
@@ -23,9 +19,9 @@ public class Attach : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag=="Asteroid")
+		if(other.tag=="Asteroid" && !myPlayer.isAttached)
         {
-            if(myPlayer.currentSpeed < myPlayer.attachSpeed)
+			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached)
             {
                 AttachToAsteroid(other.GetComponent<Asteroid>());
  
@@ -36,9 +32,19 @@ public class Attach : MonoBehaviour {
 
     void AttachToAsteroid(Asteroid asteroid)
     {
-        myPlayer.isAttached = true;
-        myPlayer.transform.parent = asteroid.transform;
-        myPlayer.currentAsteroid = asteroid; 
+		ParticleSystem.EmissionModule em = myPlayer.ps.emission;
+		em.enabled = false;
 
+        myPlayer.isAttached = true;
+		myPlayer.rb2D.mass += asteroid.rb2D.mass;
+		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
+		asteroid.transform.parent = myPlayer.transform;
+		asteroid.rb2D = null;
+		asteroid.attatchment = transform;
+		Destroy(asteroid.GetComponent<Rigidbody2D>());
+        myPlayer.currentAsteroid = asteroid; 
+		asteroid.myPlayer = myPlayer;
     }
+
+
 }
