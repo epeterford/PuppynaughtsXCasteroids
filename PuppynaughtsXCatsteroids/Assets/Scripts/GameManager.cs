@@ -104,7 +104,6 @@ public class GameManager : MonoBehaviour {
 
 	public void DogScores(float points)
 	{
-		Debug.Log ("Points to dog: " + points);
 		dogScoreValue += points;
 		Debug.Log("dog given: " + points);
 	}
