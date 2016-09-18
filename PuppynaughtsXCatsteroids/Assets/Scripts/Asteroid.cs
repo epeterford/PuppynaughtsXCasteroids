@@ -62,21 +62,15 @@ public class Asteroid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-<<<<<<< HEAD
-      //  Debug.Log("Current Asteroids: " + mom.currentNum);
-=======
 
-		
->>>>>>> 90bf12bb3590fe87e283be1b5b1365e0b914c9a9
 	}
 
 	void FixedUpdate(){
-<<<<<<< HEAD
-		if (playerMounted == Testplayer.player.NoPlayer) {
-=======
-		if (!myPlayer) {
->>>>>>> 90bf12bb3590fe87e283be1b5b1365e0b914c9a9
-			if (rb2D.velocity.magnitude > maxSpeed) {
+
+		if (!myPlayer)
+        {
+			if (rb2D.velocity.magnitude > maxSpeed) 
+            {
 				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed);
 			}
 				
@@ -89,12 +83,7 @@ public class Asteroid : MonoBehaviour {
 	public void StartMining()
     {
 		StartCoroutine("MineAndDestroy");
-<<<<<<< HEAD
-		playerMounted = player.p;
-=======
-        Debug.Log("Before Mining finishes " + Time.time);
->>>>>>> 90bf12bb3590fe87e283be1b5b1365e0b914c9a9
-    
+
 	}
 
 	void OnCollisionEnter2D(Collision2D other){
@@ -124,16 +113,13 @@ public class Asteroid : MonoBehaviour {
 
 		myPlayer.Revert();
 		mom.currentNum--;
-<<<<<<< HEAD
         GivePoints(points);
-=======
 		GameObject ps = Instantiate (boom, transform.position, Quaternion.identity) as GameObject;
 		ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
 		sm.radius = .3f * scale;
 		ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
 		em.enabled = true;
 
->>>>>>> 90bf12bb3590fe87e283be1b5b1365e0b914c9a9
         Destroy(this.gameObject);
 
     }
@@ -149,15 +135,15 @@ public class Asteroid : MonoBehaviour {
 
     void GivePoints(float points)
     {
-        if(playerMounted == Testplayer.player.Player1)
-        {
-            // cat scores
-            gm.CatScores(points/200);
-        }
-        else if(playerMounted == Testplayer.player.Player2)
+        if(myPlayer.p == Testplayer.player.Player1)
         {
             // dog scores
             gm.DogScores(points/200);
+        }
+        else if(myPlayer.p == Testplayer.player.Player2)
+        {
+            // cat scores
+            gm.CatScores(points/200);
            
         }
         Debug.Log("Points Given: " + points);

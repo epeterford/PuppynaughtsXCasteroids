@@ -63,8 +63,8 @@ public class Testplayer : MonoBehaviour {
 		}
 
 		string whichMine = playerMine[p];
-		float mine = Input.GetAxis (whichMine);
-		if(mine != 0 && isAttached)
+        bool mine = Input.GetButtonDown (whichMine);
+		if(mine && isAttached)
 		{
 			Mine();
 		}
