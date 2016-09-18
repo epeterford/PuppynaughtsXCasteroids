@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour {
 		catScore.fillAmount = 0f;
 		dogScoreValue = 0f;
 		catScoreValue = 0f;
-		timeLeft = 60;
+		timeLeft = 90;
 		commonGoal = 200;
 		timeToStart = 5;
 		startTimer.text = timeToStart.ToString();
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+
 		if(gameStarted)
 		{
 			UpdateCurrentScore();
@@ -81,7 +82,6 @@ public class GameManager : MonoBehaviour {
 	{
 		if(dogScore.fillAmount>catScore.fillAmount)
 		{
-			Debug.Log ("Dog Scores");
 			dogScore.transform.SetAsLastSibling();
 		}
 		else
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour {
 
 	void SetCommonGoalMetIfSo()
 	{
-		if(TotalScore() > 100)
+		if(TotalScore() > commonGoal)
 		{
 			PlayerPrefs.SetInt("CommonGoal", 1); 
 			commonGoalMet = true; 
@@ -105,13 +105,14 @@ public class GameManager : MonoBehaviour {
 	public void DogScores(float points)
 	{
 		dogScoreValue += points;
-		Debug.Log("dog given: " + points);
+        PlayerPrefs.SetFloat("DogScore", dogScoreValue);
+       
 	}
 
 	public void CatScores(float points)
 	{
 		catScoreValue += points;
-		Debug.Log("dog given: " + points);
+        PlayerPrefs.SetFloat("CatScore", catScoreValue);
 	}
 	public void UpdateScoreDisplay()
 	{
@@ -170,7 +171,7 @@ public class GameManager : MonoBehaviour {
 	}
 	void GameOver()
 	{
-		//SceneManager.LoadScene("GameOver");
+		SceneManager.LoadScene("GameOver");
 
 	}
 	void StartGameTimer()
