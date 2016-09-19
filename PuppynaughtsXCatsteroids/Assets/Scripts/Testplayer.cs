@@ -97,6 +97,8 @@ public class Testplayer : MonoBehaviour {
 		playerDetach.Add (player.XPlayer2, "P2 XBOX B");
 		playerTaunt.Add (player.XPlayer1, "P1 XBOX Y");
 		playerTaunt.Add (player.XPlayer2, "P2 XBOX Y");
+		playerTaunt.Add (player.Player1, "P1 Taunt");
+		playerTaunt.Add (player.Player2, "P2 Taunt");
 
 		isBoosting = false;
 		isAttached = false;
