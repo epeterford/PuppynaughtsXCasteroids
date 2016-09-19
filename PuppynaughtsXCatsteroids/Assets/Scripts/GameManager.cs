@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour {
 		dogScoreValue = 0f;
 		catScoreValue = 0f;
 		timeLeft = 90;
-		commonGoal = 200;
+		commonGoal = 100;
 		timeToStart = 5;
 		startTimer.text = timeToStart.ToString();
 		roundTimer.gameObject.SetActive(false);

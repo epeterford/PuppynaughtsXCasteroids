@@ -40,6 +40,8 @@ public class Asteroid : MonoBehaviour {
 
 	public AudioManager am;
 
+	public bool isMounted;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -50,6 +52,8 @@ public class Asteroid : MonoBehaviour {
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
+
+		isMounted = false;
 
 		am = GameObject.FindGameObjectWithTag ("Audio").GetComponent<AudioManager>();
 
@@ -177,21 +181,23 @@ public class Asteroid : MonoBehaviour {
 		isMining = false;
 		myPlayer = null;
 		sw.enabled = true;
+		isMounted = false;
 		transform.parent = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.mass = currentScale;
+		StopCoroutine ("MineAndDestroy");
 	}
 
     void GivePoints(float points)
     {
-        if(myPlayer.p == Testplayer.player.Player1)
+		if(myPlayer.p == Testplayer.player.Player1 || myPlayer.p == Testplayer.player.XPlayer1 )
         {
             // dog scores
             Debug.Log("DogScores!");
             gm.DogScores(points);
         }
-        else if(myPlayer.p == Testplayer.player.Player2)
+		else if(myPlayer.p == Testplayer.player.Player2 || myPlayer.p == Testplayer.player.XPlayer2 )
         {
             // cat scores
             Debug.Log("CatScores!");

@@ -33,23 +33,26 @@ public class Attach : MonoBehaviour {
 
     void AttachToAsteroid(Asteroid asteroid)
     {
-		Debug.Log ("Attaching");
-		ParticleSystem.EmissionModule em;
-		foreach(ParticleSystem sys in myPlayer.rocket){
-			em = sys.emission;
-			em.enabled = false;
-		}
+		if (!asteroid.isMounted) {
+			Debug.Log ("Attaching");
+			ParticleSystem.EmissionModule em;
+			asteroid.isMounted = true;
+			foreach (ParticleSystem sys in myPlayer.rocket) {
+				em = sys.emission;
+				em.enabled = false;
+			}
 
-		asteroid.sw.enabled = false;
-        myPlayer.isAttached = true;
-		myPlayer.rb2D.mass += asteroid.rb2D.mass;
-		myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
-		asteroid.transform.parent = myPlayer.transform;
-		asteroid.rb2D = null;
-		asteroid.attatchment = transform;
-		Destroy(asteroid.GetComponent<Rigidbody2D>());
-        myPlayer.currentAsteroid = asteroid; 
-		asteroid.myPlayer = myPlayer;
+			asteroid.sw.enabled = false;
+			myPlayer.isAttached = true;
+			myPlayer.rb2D.mass += asteroid.rb2D.mass;
+			myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
+			asteroid.transform.parent = myPlayer.transform;
+			asteroid.rb2D = null;
+			asteroid.attatchment = transform;
+			Destroy (asteroid.GetComponent<Rigidbody2D> ());
+			myPlayer.currentAsteroid = asteroid; 
+			asteroid.myPlayer = myPlayer;
+		}
     }
 
 

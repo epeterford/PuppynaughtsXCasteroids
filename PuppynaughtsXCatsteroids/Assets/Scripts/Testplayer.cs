@@ -14,6 +14,7 @@ public class Testplayer : MonoBehaviour {
 	public Dictionary<player, string> playerDetach = new Dictionary<player, string> ();
 	public Dictionary<player, string> playerVerticalPos = new Dictionary<player, string>();
 	public Dictionary<player, string> playerVerticalNeg = new Dictionary<player, string>();
+	public Dictionary<player, string> playerTaunt = new Dictionary<player, string>();
 
     public Image catBoostBar;
     public Image dogBoostBar; 
@@ -94,6 +95,8 @@ public class Testplayer : MonoBehaviour {
 		playerBoost.Add (player.XPlayer2, "P2 L Bumper");
 		playerDetach.Add (player.XPlayer1, "P1 XBOX B");
 		playerDetach.Add (player.XPlayer2, "P2 XBOX B");
+		playerTaunt.Add (player.XPlayer1, "P1 XBOX Y");
+		playerTaunt.Add (player.XPlayer2, "P2 XBOX Y");
 
 		isBoosting = false;
 		isAttached = false;
@@ -129,7 +132,10 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-		
+		Debug.Log (gm.gameStarted);
+		if (Input.GetButtonDown (playerTaunt [p])) {
+			PlayRandomPlayerAudio ();
+		}
         if(gm.gameStarted)
         {
 
@@ -157,7 +163,9 @@ public class Testplayer : MonoBehaviour {
 						em.enabled = true;
 
 					}
-					rocketSound.Play();
+					if (!rocketSound.isPlaying) {
+						rocketSound.Play ();
+					}
 				} else {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
@@ -173,7 +181,9 @@ public class Testplayer : MonoBehaviour {
 						em.enabled = true;
 
 					}
-					rocketSound.Play();
+					if (!rocketSound.isPlaying) {
+						rocketSound.Play ();
+					}
 				} else {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
@@ -190,7 +200,9 @@ public class Testplayer : MonoBehaviour {
 					em.enabled = true;
 
 				}
-				rocketSound.Play();
+				if (!rocketSound.isPlaying) {
+					rocketSound.Play ();
+				}
 			} else {
 				foreach (ParticleSystem sys in boostP) {
 					em = sys.emission;
@@ -277,7 +289,6 @@ public class Testplayer : MonoBehaviour {
 
 		Vector3 keepRot = transform.eulerAngles;
 
-		//Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
 		transform.eulerAngles = keepRot;
 
@@ -287,7 +298,9 @@ public class Testplayer : MonoBehaviour {
 
 		// Vertical axis for this player
 		if (p == player.XPlayer1 || p == player.XPlayer2) {
+			Debug.Log ("Getting Input");
 			verticalAxis = Input.GetAxis(playerVerticalPos[p]) - Input.GetAxis(playerVerticalNeg[p]);
+			Debug.Log ("Vertical Axis: " + verticalAxis);
 		} else{
 			string whichVerticalAxis = playerVerticalControls[p];
 			verticalAxis = Input.GetAxis (whichVerticalAxis);
@@ -350,8 +363,9 @@ public class Testplayer : MonoBehaviour {
 				sm.radius = 1f;
 				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
 				StartCoroutine ("hitCool");
+
 			}
-			if (playerTemp.boost.isBoosting && !detaching && playerTemp.isAttached) {
+			if (playerTemp.boost.isBoosting && !detaching && isAttached) {
 				Detach ();
 				StartCoroutine ("detachCool");
 			}

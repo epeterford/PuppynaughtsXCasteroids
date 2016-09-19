@@ -29,7 +29,7 @@ public class AudioManager : MonoBehaviour {
 		musicSource.clip = music [0];
 		musicSource.Play ();
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     public void PlaySingle(AudioClip clip)

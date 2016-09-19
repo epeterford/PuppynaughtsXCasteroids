@@ -59,7 +59,7 @@ public class ScreenWrap : MonoBehaviour {
 			isWrappingX = false;
 			isWrappingY = false;
 		}
-		Debug.Log (isVisible);
+
 		if (isWrappingX && isWrappingY) {
 			return;
 		}
