@@ -36,7 +36,6 @@ public class Testplayer : MonoBehaviour {
 
 	public float attachSpeed;
    
-	public bool hasAsteroid;
 	bool isBoosting;
     public bool isMining = false;
 	public Rigidbody2D rb2D;
@@ -80,7 +79,6 @@ public class Testplayer : MonoBehaviour {
 		
 
 		isBoosting = false;
-		hasAsteroid = false;
 
 		ParticleSystem.EmissionModule em;
 
@@ -142,78 +140,116 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-        if (Input.GetButtonDown (playerTaunt [player])) {
+        // Player Taunt Button
+        if (Input.GetButtonDown (playerTaunt [player])) 
+        {
 			PlayRandomPlayerAudio ();
 		}
+            
         if(gm.gameStarted)
         {
 
 			Rotate();
 
-            if(Input.GetButtonDown(playerDetach[player]) && hasAsteroid)
+            // Detach Asteroid Button
+            if(Input.GetButtonDown(playerDetach[player]) && currentAsteroid)
 			{
 				DetachAsteroid();
 			}
 
-            if (Input.GetButtonDown (playerBoost [player]) && !hasAsteroid) {
-				boost.ShipBoost ();
-				BoostCooldown ();         
+            // Boost Button
+            if (Input.GetButtonDown (playerBoost [player]) && !currentAsteroid)
+            {
+				boost.ShipBoost ();       
 			}
+
+
             string whichMine = playerMine[player];
-			if(Input.GetButtonDown(whichMine) && hasAsteroid && !isMining){
+
+            // Mine Button
+            if(Input.GetButtonDown(whichMine) && currentAsteroid && !isMining)
+            {
                 Mine();
             }
 
 			ParticleSystem.EmissionModule em;
-            if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) {
-                if ((Input.GetAxis (playerVerticalPos [player]) > .01 || Input.GetAxis (playerVerticalNeg [player]) > .01) && !hasAsteroid && !isBoosting) {
-					foreach (ParticleSystem sys in rocket) {
+            if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a controller
+            {
+                if ((Input.GetAxis (playerVerticalPos [player]) > .01 && !currentAsteroid && !isBoosting)) // If Player is moving up and isn't boosting or has an asteroid
+                {
+                    // Play Rocket Trail particles
+					foreach (ParticleSystem sys in rocket)
+                    {
 						em = sys.emission;
 						em.enabled = true;
 
 					}
-					if (!rocketSound.isPlaying) {
-						rocketSound.Play ();
+					if (!rocketSound.isPlaying) // If Rocket Trail Sound isn't playing
+                    {
+						rocketSound.Play (); // Play Rocket Trail Sound
 					}
-				} else {
-					foreach (ParticleSystem sys in rocket) {
+				} 
+                else // otherwise
+                {
+                    // Stop playing Rocket Trail particles
+					foreach (ParticleSystem sys in rocket) 
+                    {
 						em = sys.emission;
 						em.enabled = false;
-
 					}
-					rocketSound.Stop();
+					rocketSound.Stop(); // Stop Rocket Trail Sound
 				}
-			} else {
-                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !hasAsteroid && !boost.isBoosting) {
-					foreach (ParticleSystem sys in rocket) {
+			} 
+            else // otherwise, if Player is using a keyboard
+            {
+                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !currentAsteroid && !boost.isBoosting)// If Player is moving up and isn't boosting or has an asteroid
+                {
+                    // Play Rocket Trail particles
+					foreach (ParticleSystem sys in rocket) 
+                    {
 						em = sys.emission;
 						em.enabled = true;
 
 					}
-					if (!rocketSound.isPlaying) {
-						rocketSound.Play ();
+					if (!rocketSound.isPlaying) // If Rocket Trail Sound isn't playing
+                    {
+						rocketSound.Play (); // Play Rocket Trail Sound
 					}
-				} else {
-					foreach (ParticleSystem sys in rocket) {
+				} 
+                else // otherwise
+                {
+                    // Stop playing Rocket Trail particles
+					foreach (ParticleSystem sys in rocket) 
+                    {
 						em = sys.emission;
 						em.enabled = false;
 
 					}
-					rocketSound.Stop();
+					rocketSound.Stop(); // Stop Rocket Trail sound
 				}
 			}
 
-			if (boost.isBoosting) {
-				foreach (ParticleSystem sys in boostP) {
+
+			if (boost.isBoosting) // If Player is boosting
+            {
+                // Play Rocket Trail particles
+				foreach (ParticleSystem sys in boostP)
+                {
 					em = sys.emission;
 					em.enabled = true;
 
 				}
-				if (!rocketSound.isPlaying) {
-					rocketSound.Play ();
+
+				if (!rocketSound.isPlaying) // If Rocket Trail sound isn't palying
+                {
+					rocketSound.Play (); // Play Rocket Trail sound
 				}
-			} else {
-				foreach (ParticleSystem sys in boostP) {
+			} 
+            else // otherwise
+            {
+                // Stop Playing Rocket Trail Particles
+				foreach (ParticleSystem sys in boostP) 
+                {
 					em = sys.emission;
 					em.enabled = false;
 				}
@@ -225,7 +261,7 @@ public class Testplayer : MonoBehaviour {
     {
         if(gm.gameStarted)
         {
-            if(!hasAsteroid)
+            if(!currentAsteroid)
             {
                 Move();
             }
@@ -248,6 +284,27 @@ public class Testplayer : MonoBehaviour {
         }
     }
 
+    public bool CanGrabAsteroid()
+    {
+        if(currentSpeed < attachSpeed && !currentAsteroid && detaching!= true )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public void AsteroidGrabbed(Asteroid asteroid)
+    {
+        currentAsteroid = asteroid;
+        rb2D.velocity += asteroid.rb2D.velocity;
+        currentAsteroid = asteroid; 
+        rb2D.mass += asteroid.rb2D.mass;
+    }
+
 	void DetachAsteroid()
     {
 		
@@ -259,27 +316,11 @@ public class Testplayer : MonoBehaviour {
 
 	}
 
-    void BoostCooldown()
-    {
-        
-        if(player == playerRef.Player1)
-        {
-            gm.catCoolDown.fillAmount = 0;
-            gm.dogNeedsCoolDown = true;
-        }
-        else if(player == playerRef.Player2)
-        {
-            gm.dogCoolDown.fillAmount = 0;
-            gm.catNeedsCoolDown = true;
-        }
-
-    }
 	public void Revert()
     {
 		maxForwardSpeed = 6.9f;
         maxBackwardSpeed = 2.1f;
 		rb2D.mass = 1;
-		hasAsteroid = false;
 		currentAsteroid = null;
         isMining = false;
 	}
@@ -288,16 +329,7 @@ public class Testplayer : MonoBehaviour {
 	{
         currentSpeed = rb2D.velocity.magnitude;
 
-        // Check To Apply Drift
-        if (currentSpeed > driftCheckSpeed) 
-        {
-            // Apply friction
-			Vector3 easeVelocity = rb2D.velocity;
-			easeVelocity.y *= driftAmount;
-			easeVelocity.x *= driftAmount;
-			rb2D.velocity = easeVelocity; 
-		}
-
+        ApplyDrift();
 
 		Vector3 keepRot = transform.eulerAngles;
 
@@ -347,7 +379,7 @@ public class Testplayer : MonoBehaviour {
         string whichHorizontalAxis = playerHorizontalControls[player];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
 		
-        if (!hasAsteroid) // If player doesn't currently have an asteroid
+        if (!currentAsteroid) // If player doesn't currently have an asteroid
         {
 			transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180); // Apply rotation
 		} 
@@ -388,16 +420,32 @@ public class Testplayer : MonoBehaviour {
 				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
 				sm.radius = 1f;
 				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;  
+
+                StartCoroutine ("hitCool");
 			}
 
-            if (hitPlayer.boost.isBoosting && !detaching && hasAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
+            if (hitPlayer.boost.isBoosting && !detaching && currentAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
             {
 				DetachAsteroid (); // Detach Asteroid 
 			}
 
-            StartCoroutine ("hitCool");
+
 		}
 	}
+
+    void ApplyDrift()
+    {
+        // Check To Apply Drift
+        if (currentSpeed > driftCheckSpeed) 
+        {
+            // Apply friction
+            Vector3 easeVelocity = rb2D.velocity;
+            easeVelocity.y *= driftAmount;
+            easeVelocity.x *= driftAmount;
+            rb2D.velocity = easeVelocity; 
+        }
+
+    }
 
 	IEnumerator hitCool()
     {

@@ -8,7 +8,6 @@ public class AsteroidSpawner : MonoBehaviour {
 	float timer;
 	bool readySpawn;
 	float spawnRadius;
-	Vector3 center;
 
 	bool full;
 
@@ -17,7 +16,6 @@ public class AsteroidSpawner : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		timer = 1;
-		center = new Vector3 (0, 0, 0);
 		StartCoroutine ("spawnTimer");
 		maxNum = 12;
 		currentNum = 0;

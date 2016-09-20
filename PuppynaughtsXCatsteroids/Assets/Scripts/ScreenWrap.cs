@@ -4,7 +4,7 @@ using System.Collections;
 public class ScreenWrap : MonoBehaviour {
 
 	//Screen wrap variables
-	public MeshRenderer renderer;
+	public MeshRenderer mRenderer;
 	public Camera cam;
 	private Vector3 viewportsPosition;
 	public bool isWrappingX;
@@ -18,11 +18,11 @@ public class ScreenWrap : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		cam = Camera.main;
-		if (!renderer) {
+        if (!mRenderer) {
 			if (!GetComponent<MeshRenderer> ()) {
-				renderer = GetComponentInChildren<MeshRenderer> ();
+                mRenderer = GetComponentInChildren<MeshRenderer> ();
 			} else {
-				renderer = GetComponent<MeshRenderer> ();
+                mRenderer = GetComponent<MeshRenderer> ();
 			}
 		}
 
@@ -45,7 +45,7 @@ public class ScreenWrap : MonoBehaviour {
 	//Screen Wrap functions
 	bool CheckRenderers(){
 		
-		if (renderer.isVisible) {
+        if (mRenderer.isVisible) {
 			return true;
 		}
 
@@ -91,7 +91,7 @@ public class ScreenWrap : MonoBehaviour {
 	}
 
 	public void RendUpdate(){
-		renderer = GetComponent<MeshRenderer> ();
+        mRenderer = GetComponent<MeshRenderer> ();
 	}
 
 

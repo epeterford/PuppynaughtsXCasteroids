@@ -40,7 +40,7 @@ public class Asteroid : MonoBehaviour {
 
 	public AudioManager am;
 
-	public bool isMounted;
+	public bool isGrabbed;
 
 	// Use this for initialization
 	void Start () 
@@ -53,7 +53,7 @@ public class Asteroid : MonoBehaviour {
 		transform.localScale = new Vector3(scale,scale,scale);
 		isMining = false;
 
-		isMounted = false;
+		isGrabbed = false;
 
 		am = GameObject.FindGameObjectWithTag ("Audio").GetComponent<AudioManager>();
 
@@ -95,7 +95,8 @@ public class Asteroid : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate(){
+	void FixedUpdate()
+    {
 
 		if (!myPlayer)
         {
@@ -116,7 +117,8 @@ public class Asteroid : MonoBehaviour {
 		}
 	}
 		
-	void Rotate()	{
+	void Rotate()	
+    {
 		transform.Rotate(0,0,Input.GetAxis("Horizontal") * Time.deltaTime * 180 * -1);
 	}
 	public void StartMining()
@@ -125,7 +127,8 @@ public class Asteroid : MonoBehaviour {
 
 	}
 
-	void OnCollisionEnter2D(Collision2D other){
+	void OnCollisionEnter2D(Collision2D other)
+    {
 		if (other.gameObject.tag == "Player" && !collisionCool) {
 			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
 			if(playerTemp.rb2D.velocity.magnitude >= 3){
@@ -175,13 +178,21 @@ public class Asteroid : MonoBehaviour {
 		yield return new WaitForSeconds (.3f);
 		collisionCool = false;
 	}
+    public void Grabbed(Testplayer player)
+    {
+        isGrabbed = true;
+        sw.enabled = false;
+        myPlayer = player;
+        Destroy(GetComponent<Rigidbody2D>()); 
 
+
+    }
 	public void Detach()
     {
 		isMining = false;
 		myPlayer = null;
 		sw.enabled = true;
-		isMounted = false;
+		isGrabbed = false;
 		transform.parent = null;
 		gameObject.AddComponent<Rigidbody2D> ();
 		rb2D = GetComponent<Rigidbody2D> ();

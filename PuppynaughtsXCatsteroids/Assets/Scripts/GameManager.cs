@@ -10,37 +10,32 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+    //UI
 	public Image dogScore; 
 	public Image catScore; 
-	public float dogScoreValue;
-	public float catScoreValue;
-	public Text roundTimer; 
-	public float timeLeft; 
-	public GameObject scoreUI;
-	public Image dogCoolDown;
-	public Image catCoolDown; 
-	public bool catNeedsCoolDown = false;
-	public bool dogNeedsCoolDown = false;
-	public float commonGoal;
-	static bool commonGoalMet = false;
+    public Text roundTimer; 
+    public Text startTimer;
+   
+
+    float dogScoreValue = 0f;
+    float catScoreValue = 0f;
+
+    float timeLeft = 90; // time left in round
+    float countdownTime = 5; 
+	
+    float commonGoal = 100; 
+
 	public bool gameStarted = false;
-	public Text startTimer;
-	public float timeToStart; 
+
 	// Use this for initialization
 	void Start () 
 	{
 		PlayerPrefs.DeleteAll();
 		PlayerPrefs.SetInt("CommonGoal", 0);
-		dogScore.fillAmount = 0f;
-		catScore.fillAmount = 0f;
-		dogScoreValue = 0f;
-		catScoreValue = 0f;
-		timeLeft = 90;
-		commonGoal = 100;
-		timeToStart = 5;
-		startTimer.text = timeToStart.ToString();
-		roundTimer.gameObject.SetActive(false);
-		StartGameTimer();
+
+		roundTimer.gameObject.SetActive(false); // hide round timer
+		
+        StartCountdown();
 	}
 
 	// Update is called once per frame
@@ -49,58 +44,36 @@ public class GameManager : MonoBehaviour {
 
 		if(gameStarted)
 		{
-			UpdateCurrentScore();
-
 			UpdateRoundTime();
-
 			SetCommonGoalMetIfSo();
-
 			UpdateScoreDisplay();
-
-			if(catNeedsCoolDown)
-			{
-				catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-				if(catCoolDown.fillAmount>=1)
-				{
-					catNeedsCoolDown = false;
-				}
-			}
-			if(dogNeedsCoolDown)
-			{
-				dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-				if(dogCoolDown.fillAmount>=1)
-				{
-					dogNeedsCoolDown = false;
-				}
-			}
 		}
-		else
-		{
-			StartGameTimer();
-		}
+        else
+        {
+            StartCountdown();
+        }
 	}
 
-	void UpdateCurrentScore()
-	{
-		if(dogScore.fillAmount>catScore.fillAmount)
-		{
-			dogScore.transform.SetAsLastSibling();
-		}
-		else
-		{
-			catScore.transform.SetAsLastSibling();
-		}
+    void StartCountdown()
+    {
+        //Subtract Time
+        countdownTime -= Time.deltaTime;
+        startTimer.text = Mathf.Round(countdownTime).ToString();
 
-		roundTimer.transform.SetAsLastSibling();
+        if(countdownTime<0) // if countdown is complete
+        {
+            Destroy(startTimer.gameObject);
+            roundTimer.gameObject.SetActive(true);
 
-	}
+            gameStarted = true; // Start Game
+        }
 
+    }
 	void SetCommonGoalMetIfSo()
 	{
-		if(TotalScore() > commonGoal)
+        if(GetTotalScore() > commonGoal)
 		{
 			PlayerPrefs.SetInt("CommonGoal", 1); 
-			commonGoalMet = true; 
 		}
 	}
 
@@ -110,37 +83,48 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetFloat("DogScore", dogScoreValue);
        
 	}
-
 	public void CatScores(float points)
 	{
 		catScoreValue += points;
         PlayerPrefs.SetFloat("CatScore", catScoreValue);
 	}
-	public void UpdateScoreDisplay()
+
+	void UpdateScoreDisplay()
 	{
-		if (!CheckIfCommonGoalMet ())
-		{
+		if (!CheckIfCommonGoalMet ()) // If Common goal isn't met
+        {
+            // Display Dog and Cat scores based on the Common Goal
 			dogScore.fillAmount = dogScoreValue / commonGoal;
 			catScore.fillAmount = catScoreValue / commonGoal;	
 		}
-		else
+		else // otherwise
 		{
-			float dogProportionalScore;
-			float catProportionalScore;
-
-			dogProportionalScore = dogScoreValue / TotalScore ();
-			catProportionalScore = catScoreValue / TotalScore ();
-			dogScore.fillAmount = dogProportionalScore;
-			catScore.fillAmount = catProportionalScore;
+            // Display Dog and Cat scores propotionally 
+            dogScore.fillAmount= dogScoreValue / GetTotalScore ();
+            catScore.fillAmount = catScoreValue / GetTotalScore ();
 		}
+
+        // Display higher score bar on top
+        if(dogScore.fillAmount>catScore.fillAmount)
+        {
+            dogScore.transform.SetAsLastSibling();
+        }
+        else
+        {
+            catScore.transform.SetAsLastSibling();
+        }
+
+        // Display Round Timer on top of HUD
+        roundTimer.transform.SetAsLastSibling();
 	}
-	public float TotalScore()
+        
+	float GetTotalScore()
 	{
 		return dogScoreValue + catScoreValue;
 	}
-	public bool CheckIfCommonGoalMet()
+	bool CheckIfCommonGoalMet()
 	{
-		return TotalScore () >= commonGoal;
+        return GetTotalScore () >= commonGoal;
 	}
 	void UpdateRoundTime()
 	{
@@ -162,34 +146,9 @@ public class GameManager : MonoBehaviour {
 		}
 
 	}
-
-	public void CatCoolDown()
-	{
-		catCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-	}
-	public void DogCoolDown()
-	{
-		dogCoolDown.fillAmount +=1.0f/3 * Time.deltaTime;
-	}
 	void GameOver()
 	{
 		SceneManager.LoadScene("GameOver");
-
-	}
-	void StartGameTimer()
-	{
-
-		//Subtract Time
-		timeToStart -= Time.deltaTime;
-		startTimer.text = Mathf.Round(timeToStart).ToString();
-
-		if(timeToStart<0)
-		{
-			//Start Game();
-			Destroy(startTimer.gameObject);
-			gameStarted = true;
-			roundTimer.gameObject.SetActive(true);
-		}
 
 	}
 }

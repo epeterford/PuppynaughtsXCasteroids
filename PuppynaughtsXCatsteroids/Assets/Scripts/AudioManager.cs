@@ -78,10 +78,7 @@ public class AudioManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        int randomIndex = Random.Range(0, bgClilps.Length);
-       // musicSource.clip =  bgClilps[randomIndex];
-
-        //musicSource.Play();
+       
 	}
 	
 	// Update is called once per frame
