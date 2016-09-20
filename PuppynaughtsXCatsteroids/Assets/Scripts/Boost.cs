@@ -5,12 +5,11 @@ public class Boost : MonoBehaviour {
 	
 	float maxBoost;
 
-	public float attachSpeed;
 	float timeSinceBoost;
 
 	public bool isBoosting;
 
-	Testplayer player;
+	PlayerController player;
 	
 	
 	
@@ -18,10 +17,9 @@ public class Boost : MonoBehaviour {
 	void Start () 
 	{
 		maxBoost = 25;
-		attachSpeed = 1.5f;
 		timeSinceBoost = 0;
 
-		player = GetComponent<Testplayer> ();
+        player = GetComponent<PlayerController> ();
 		
 		isBoosting = false;
 	}

@@ -16,23 +16,21 @@ public class GameManager : MonoBehaviour {
     public Text roundTimer; 
     public Text startTimer;
    
-
     float dogScoreValue = 0f;
     float catScoreValue = 0f;
+
+    float commonGoal = 100; 
 
     float timeLeft = 90; // time left in round
     float countdownTime = 5; 
 	
-    float commonGoal = 100; 
-
 	public bool gameStarted = false;
 
 	// Use this for initialization
 	void Start () 
 	{
-		PlayerPrefs.DeleteAll();
-		PlayerPrefs.SetInt("CommonGoal", 0);
-
+		PlayerPrefs.DeleteAll(); 
+      
 		roundTimer.gameObject.SetActive(false); // hide round timer
 		
         StartCountdown();
@@ -41,7 +39,6 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-
 		if(gameStarted)
 		{
 			UpdateRoundTime();
@@ -67,8 +64,8 @@ public class GameManager : MonoBehaviour {
 
             gameStarted = true; // Start Game
         }
-
     }
+
 	void SetCommonGoalMetIfSo()
 	{
         if(GetTotalScore() > commonGoal)
@@ -83,6 +80,7 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetFloat("DogScore", dogScoreValue);
        
 	}
+
 	public void CatScores(float points)
 	{
 		catScoreValue += points;
@@ -122,10 +120,12 @@ public class GameManager : MonoBehaviour {
 	{
 		return dogScoreValue + catScoreValue;
 	}
+
 	bool CheckIfCommonGoalMet()
 	{
         return GetTotalScore () >= commonGoal;
 	}
+
 	void UpdateRoundTime()
 	{
 		//Subtract Time
@@ -144,11 +144,10 @@ public class GameManager : MonoBehaviour {
 		{
 			roundTimer.text = timeLeft.ToString("F2");
 		}
-
 	}
+
 	void GameOver()
 	{
 		SceneManager.LoadScene("GameOver");
-
 	}
 }

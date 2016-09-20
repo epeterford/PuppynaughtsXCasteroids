@@ -3,12 +3,12 @@ using System.Collections;
 
 public class Grabber : MonoBehaviour {
 
-    Testplayer myPlayer;
+    PlayerController myPlayer;
 
 	// Use this for initialization
 	void Start () 
     {
-        myPlayer = transform.parent.GetComponent<Testplayer>(); // Get Player
+        myPlayer = transform.parent.GetComponent<PlayerController>(); // Get Player
 	}
 	
     void OnTriggerEnter2D(Collider2D other)

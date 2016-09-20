@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 
-public class GameOverManager : MonoBehaviour {
+public class EndGameManager : MonoBehaviour {
 
 
     public GameObject MissionCompletePanel;
@@ -113,10 +113,4 @@ public class GameOverManager : MonoBehaviour {
             menuBtn.gameObject.SetActive(true);
         }
 	}
-
-    public void ToMenu()
-    {
-        SceneManager.LoadScene("MainMenuScene");
-
-    }
 }

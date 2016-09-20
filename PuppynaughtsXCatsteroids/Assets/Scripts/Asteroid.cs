@@ -4,7 +4,7 @@ using System.Collections;
 public class Asteroid : MonoBehaviour {
 
     float mineTime = 0; 
-    public Testplayer myPlayer; 
+    public PlayerController myPlayer; 
 	public float maxSpeed;
 	public float accelerationForce = 10f;
 	public float startSpeed;
@@ -47,7 +47,7 @@ public class Asteroid : MonoBehaviour {
     {
 		sw = GetComponent<ScreenWrap> ();
         gm = FindObjectOfType<GameManager>();
-        myPlayer = FindObjectOfType<Testplayer>();
+        myPlayer = FindObjectOfType<PlayerController>();
 		scale = Random.Range (.3f, 5);
 		currentScale = scale;
 		transform.localScale = new Vector3(scale,scale,scale);
@@ -130,7 +130,7 @@ public class Asteroid : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D other)
     {
 		if (other.gameObject.tag == "Player" && !collisionCool) {
-			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
+			PlayerController playerTemp = other.gameObject.GetComponentInParent<PlayerController> ();
 			if(playerTemp.rb2D.velocity.magnitude >= 3){
 				GameObject ps = Instantiate (noseHit, other.contacts[0].point, Quaternion.identity) as GameObject;
 				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
@@ -178,7 +178,7 @@ public class Asteroid : MonoBehaviour {
 		yield return new WaitForSeconds (.3f);
 		collisionCool = false;
 	}
-    public void Grabbed(Testplayer player)
+    public void Grabbed(PlayerController player)
     {
         isGrabbed = true;
         sw.enabled = false;
@@ -202,13 +202,13 @@ public class Asteroid : MonoBehaviour {
 
     void GivePoints(float points)
     {
-        if(myPlayer.player == Testplayer.playerRef.Player1 || myPlayer.player == Testplayer.playerRef.XPlayer1 )
+        if(myPlayer.player == PlayerController.playerRef.Player1 || myPlayer.player == PlayerController.playerRef.XPlayer1 )
         {
             // dog scores
             Debug.Log("DogScores!");
             gm.DogScores(points);
         }
-        else if(myPlayer.player == Testplayer.playerRef.Player2 || myPlayer.player == Testplayer.playerRef.XPlayer2 )
+        else if(myPlayer.player == PlayerController.playerRef.Player2 || myPlayer.player == PlayerController.playerRef.XPlayer2 )
         {
             // cat scores
             Debug.Log("CatScores!");
