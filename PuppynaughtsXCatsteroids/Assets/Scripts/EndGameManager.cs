@@ -18,25 +18,34 @@ public class EndGameManager : MonoBehaviour {
     public Image madCat;
 
     public Text winnerText; 
+    public Text CatScoreText;
+    public Text DogScoreText; 
 
     public Button menuBtn;
 
-    public float fillTime = 5.0f;
-    bool startFilling = false;
+    float fillTime = 5.0f;
+    bool fillScoreBars = false;
     bool dogBarFilled = false;
     bool catBarFilled = false;
+
 	// Use this for initialization
 	void Start () 
     {
         menuBtn.gameObject.SetActive(false);
         winnerText.gameObject.SetActive(false);
+        CatScoreText.gameObject.SetActive(false);
+        DogScoreText.gameObject.SetActive(false);
+
+        CatScoreText.text = PlayerPrefs.GetFloat("CatScore").ToString();
+        DogScoreText.text = PlayerPrefs.GetFloat("DogScore").ToString();
 
         // If Common Goal Met
         if(PlayerPrefs.GetInt("CommonGoal")==1)
         {
-            
             MissionCompletePanel.SetActive(true);
             MissionFailedPanel.SetActive(false);
+
+            GetWinner();
         }
 
         //If Common Goal Failed
@@ -46,7 +55,10 @@ public class EndGameManager : MonoBehaviour {
             MissionFailedPanel.SetActive(true);
             MissionCompletePanel.SetActive(false);
         }
+    }
 
+    void GetWinner()
+    {
         // If Cat Wins
         if(PlayerPrefs.GetFloat("CatScore") > PlayerPrefs.GetFloat("DogScore"))
         {
@@ -78,13 +90,13 @@ public class EndGameManager : MonoBehaviour {
 
         }
 
-        startFilling = true;
+        fillScoreBars = true;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        if(startFilling)
+        if(fillScoreBars)
         {
             if(!dogBarFilled)
             {
@@ -95,7 +107,6 @@ public class EndGameManager : MonoBehaviour {
                 catBar.fillAmount+=1.0f/fillTime * Time.deltaTime; 
             }
 
-
             if(dogBar.fillAmount >= PlayerPrefs.GetFloat("DogScore")/(PlayerPrefs.GetFloat("DogScore") + PlayerPrefs.GetFloat("CatScore")))
             {
                 dogBarFilled = true;
@@ -104,13 +115,22 @@ public class EndGameManager : MonoBehaviour {
             {
                 catBarFilled = true;
             }
+
+            if(dogBarFilled && catBarFilled)
+            {
+                DisplayResults();
+                fillScoreBars = false;
+            }
         }
 
-        if(dogBarFilled && catBarFilled)
-        {
-            startFilling = false;
-            winnerText.gameObject.SetActive(true);
-            menuBtn.gameObject.SetActive(true);
-        }
+
 	}
+
+    void DisplayResults()
+    {
+        winnerText.gameObject.SetActive(true);
+        CatScoreText.gameObject.SetActive(true);
+        DogScoreText.gameObject.SetActive(true);
+        menuBtn.gameObject.SetActive(true);
+    }
 }
