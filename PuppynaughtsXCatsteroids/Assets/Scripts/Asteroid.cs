@@ -191,13 +191,13 @@ public class Asteroid : MonoBehaviour {
 
     void GivePoints(float points)
     {
-		if(myPlayer.p == Testplayer.player.Player1 || myPlayer.p == Testplayer.player.XPlayer1 )
+        if(myPlayer.player == Testplayer.playerRef.Player1 || myPlayer.player == Testplayer.playerRef.XPlayer1 )
         {
             // dog scores
             Debug.Log("DogScores!");
             gm.DogScores(points);
         }
-		else if(myPlayer.p == Testplayer.player.Player2 || myPlayer.p == Testplayer.player.XPlayer2 )
+        else if(myPlayer.player == Testplayer.playerRef.Player2 || myPlayer.player == Testplayer.playerRef.XPlayer2 )
         {
             // cat scores
             Debug.Log("CatScores!");

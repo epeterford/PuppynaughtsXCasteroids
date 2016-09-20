@@ -20,9 +20,9 @@ public class Attach : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-		if(other.tag=="Asteroid" && !myPlayer.isAttached)
+		if(other.tag=="Asteroid" && !myPlayer.hasAsteroid)
         {
-			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.isAttached && !myPlayer.detaching)
+			if(myPlayer.currentSpeed < myPlayer.attachSpeed && !myPlayer.hasAsteroid && !myPlayer.detaching)
             {
                 AttachToAsteroid(other.GetComponentInParent<Asteroid>());
  
@@ -43,7 +43,7 @@ public class Attach : MonoBehaviour {
 			}
 
 			asteroid.sw.enabled = false;
-			myPlayer.isAttached = true;
+			myPlayer.hasAsteroid = true;
 			myPlayer.rb2D.mass += asteroid.rb2D.mass;
 			myPlayer.rb2D.velocity += asteroid.rb2D.velocity;
 			asteroid.transform.parent = myPlayer.transform;

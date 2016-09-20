@@ -1,3 +1,9 @@
+/// <summary>
+/// Test Player.
+/// Player controller for each player in the game.  
+/// Controls all of the player's mechanics, collisions, and audio. 
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -5,29 +11,32 @@ using System.Collections.Generic;
 
 public class Testplayer : MonoBehaviour {
 
-	public enum player {NoPlayer = 0, Player1 = 1, Player2 = 2, XPlayer1 = 3, XPlayer2 = 4};
+	public enum playerRef {NoPlayer = 0, Player1 = 1, Player2 = 2, XPlayer1 = 3, XPlayer2 = 4};
 
-	public Dictionary<player, string> playerHorizontalControls = new Dictionary<player, string>();
-	public Dictionary<player, string> playerVerticalControls = new Dictionary<player, string>();
-	public Dictionary<player, string> playerMine = new Dictionary<player, string> ();
-	public Dictionary<player, string> playerBoost = new Dictionary<player, string> ();
-	public Dictionary<player, string> playerDetach = new Dictionary<player, string> ();
-	public Dictionary<player, string> playerVerticalPos = new Dictionary<player, string>();
-	public Dictionary<player, string> playerVerticalNeg = new Dictionary<player, string>();
-	public Dictionary<player, string> playerTaunt = new Dictionary<player, string>();
+    public Dictionary<playerRef, string> playerHorizontalControls = new Dictionary<playerRef, string>();
+    public Dictionary<playerRef, string> playerVerticalControls = new Dictionary<playerRef, string>();
+    public Dictionary<playerRef, string> playerMine = new Dictionary<playerRef, string> ();
+    public Dictionary<playerRef, string> playerBoost = new Dictionary<playerRef, string> ();
+    public Dictionary<playerRef, string> playerDetach = new Dictionary<playerRef, string> ();
+    public Dictionary<playerRef, string> playerVerticalPos = new Dictionary<playerRef, string>();
+    public Dictionary<playerRef, string> playerVerticalNeg = new Dictionary<playerRef, string>();
+    public Dictionary<playerRef, string> playerTaunt = new Dictionary<playerRef, string>();
 
-    public Image catBoostBar;
-    public Image dogBoostBar; 
-    public GameManager gm; 
-	public player p;
-	float maxBoost;
-	public float maxSpeed;
-	float speed;
-	float driftSpeed;
+    public GameManager gm; // Reference to the Game Manager
+    public playerRef player; // Reference to which player this is
+
+    float playerSpeed = 10; // Base speed for the player
+    public float currentSpeed; // Player's current speed
+    float maxForwardSpeed = 6.9f; // Max speed player can reach when not boosting and moving forward
+    float maxBackwardSpeed = 2.1f; // Max speed player can reach when not boosting and moving backward
+    float driftCheckSpeed = 1; // The speed to check if the player should be drifting
+    float driftAmount = .99f; // Drift to apply to player when they reach a certain speed
+
+    float maxBoost;
+
 	public float attachSpeed;
-	public float currentSpeed; 
-
-	public bool isAttached;
+   
+	public bool hasAsteroid;
 	bool isBoosting;
     public bool isMining = false;
 	public Rigidbody2D rb2D;
@@ -55,53 +64,23 @@ public class Testplayer : MonoBehaviour {
 
 	void Start () 
     {
-		am = GameObject.FindGameObjectWithTag ("Audio").GetComponent<AudioManager> ();
+        am = FindObjectOfType<AudioManager>();
         gm = FindObjectOfType<GameManager>();
-		maxSpeed = 6;
-		speed = 15;
 
 		collisionCool = false;
 		detaching = false;
 
-		Debug.Log (p.ToString());
-		maxSpeed = 6;
-		speed = 10;
-		driftSpeed = 1f;
 		attachSpeed = 5f;
 		rb2D = GetComponent<Rigidbody2D> ();
 		rb2D.angularDrag = 3;
 
 		boost = GetComponent<Boost> ();
 
-		playerHorizontalControls.Add (player.Player1, "P1 Horizontal");
-		playerHorizontalControls.Add (player.Player2, "P2 Horizontal");
-		playerVerticalControls.Add (player.Player1, "P1 Vertical");
-		playerVerticalControls.Add (player.Player2, "P2 Vertical");
-		playerMine.Add (player.Player1, "P1 Mine");
-		playerMine.Add (player.Player2, "P2 Mine");
-		playerBoost.Add (player.Player1, "P1 Boost");
-		playerBoost.Add (player.Player2, "P2 Boost");
-		playerDetach.Add (player.Player1, "P1 Detach");
-		playerDetach.Add (player.Player2, "P2 Detach");
-		playerHorizontalControls.Add (player.XPlayer1, "P1 XBOX Hori");
-		playerHorizontalControls.Add (player.XPlayer2, "P2 XBOX Hori");
-		playerVerticalPos.Add (player.XPlayer1, "P1 R Trigger");
-		playerVerticalPos.Add (player.XPlayer2, "P2 R Trigger");
-		playerVerticalNeg.Add (player.XPlayer1, "P1 L Trigger");
-		playerVerticalNeg.Add (player.XPlayer2, "P2 L Trigger");
-		playerMine.Add (player.XPlayer1, "P1 XBOX A");
-		playerMine.Add (player.XPlayer2, "P2 XBOX A");
-		playerBoost.Add (player.XPlayer1, "P1 L Bumper");
-		playerBoost.Add (player.XPlayer2, "P2 L Bumper");
-		playerDetach.Add (player.XPlayer1, "P1 XBOX B");
-		playerDetach.Add (player.XPlayer2, "P2 XBOX B");
-		playerTaunt.Add (player.XPlayer1, "P1 XBOX Y");
-		playerTaunt.Add (player.XPlayer2, "P2 XBOX Y");
-		playerTaunt.Add (player.Player1, "P1 Taunt");
-		playerTaunt.Add (player.Player2, "P2 Taunt");
+        SetUpPlayerControls();
+		
 
 		isBoosting = false;
-		isAttached = false;
+		hasAsteroid = false;
 
 		ParticleSystem.EmissionModule em;
 
@@ -116,7 +95,36 @@ public class Testplayer : MonoBehaviour {
 		}
 
 	}
-		
+	
+    void SetUpPlayerControls()
+    {
+        playerHorizontalControls.Add (playerRef.Player1, "P1 Horizontal");
+        playerHorizontalControls.Add (playerRef.Player2, "P2 Horizontal");
+        playerVerticalControls.Add (playerRef.Player1, "P1 Vertical");
+        playerVerticalControls.Add (playerRef.Player2, "P2 Vertical");
+        playerMine.Add (playerRef.Player1, "P1 Mine");
+        playerMine.Add (playerRef.Player2, "P2 Mine");
+        playerBoost.Add (playerRef.Player1, "P1 Boost");
+        playerBoost.Add (playerRef.Player2, "P2 Boost");
+        playerDetach.Add (playerRef.Player1, "P1 Detach");
+        playerDetach.Add (playerRef.Player2, "P2 Detach");
+        playerHorizontalControls.Add (playerRef.XPlayer1, "P1 XBOX Hori");
+        playerHorizontalControls.Add (playerRef.XPlayer2, "P2 XBOX Hori");
+        playerVerticalPos.Add (playerRef.XPlayer1, "P1 R Trigger");
+        playerVerticalPos.Add (playerRef.XPlayer2, "P2 R Trigger");
+        playerVerticalNeg.Add (playerRef.XPlayer1, "P1 L Trigger");
+        playerVerticalNeg.Add (playerRef.XPlayer2, "P2 L Trigger");
+        playerMine.Add (playerRef.XPlayer1, "P1 XBOX A");
+        playerMine.Add (playerRef.XPlayer2, "P2 XBOX A");
+        playerBoost.Add (playerRef.XPlayer1, "P1 L Bumper");
+        playerBoost.Add (playerRef.XPlayer2, "P2 L Bumper");
+        playerDetach.Add (playerRef.XPlayer1, "P1 XBOX B");
+        playerDetach.Add (playerRef.XPlayer2, "P2 XBOX B");
+        playerTaunt.Add (playerRef.XPlayer1, "P1 XBOX Y");
+        playerTaunt.Add (playerRef.XPlayer2, "P2 XBOX Y");
+        playerTaunt.Add (playerRef.Player1, "P1 Taunt");
+        playerTaunt.Add (playerRef.Player2, "P2 Taunt");
+    }
     public void InitPointText(string text)
     {
         GameObject temp = Instantiate(PointTextPrefab) as GameObject;
@@ -134,8 +142,7 @@ public class Testplayer : MonoBehaviour {
     }
 	void Update () 
 	{
-		Debug.Log (gm.gameStarted);
-		if (Input.GetButtonDown (playerTaunt [p])) {
+        if (Input.GetButtonDown (playerTaunt [player])) {
 			PlayRandomPlayerAudio ();
 		}
         if(gm.gameStarted)
@@ -143,23 +150,23 @@ public class Testplayer : MonoBehaviour {
 
 			Rotate();
 
-			if(Input.GetButtonDown(playerDetach[p]) && isAttached)
+            if(Input.GetButtonDown(playerDetach[player]) && hasAsteroid)
 			{
-				Detach();
+				DetachAsteroid();
 			}
 
-			if (Input.GetButtonDown (playerBoost [p]) && !isAttached) {
+            if (Input.GetButtonDown (playerBoost [player]) && !hasAsteroid) {
 				boost.ShipBoost ();
 				BoostCooldown ();         
 			}
-			string whichMine = playerMine[p];
-			if(Input.GetButtonDown(whichMine) && isAttached && !isMining){
+            string whichMine = playerMine[player];
+			if(Input.GetButtonDown(whichMine) && hasAsteroid && !isMining){
                 Mine();
             }
 
 			ParticleSystem.EmissionModule em;
-			if (p == player.XPlayer1 || p == player.XPlayer2) {
-				if ((Input.GetAxis (playerVerticalPos [p]) > .01 || Input.GetAxis (playerVerticalNeg [p]) > .01) && !isAttached && !isBoosting) {
+            if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) {
+                if ((Input.GetAxis (playerVerticalPos [player]) > .01 || Input.GetAxis (playerVerticalNeg [player]) > .01) && !hasAsteroid && !isBoosting) {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = true;
@@ -177,7 +184,7 @@ public class Testplayer : MonoBehaviour {
 					rocketSound.Stop();
 				}
 			} else {
-				if (Mathf.Abs (Input.GetAxis (playerVerticalControls [p])) > .01 && !isAttached && !boost.isBoosting) {
+                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !hasAsteroid && !boost.isBoosting) {
 					foreach (ParticleSystem sys in rocket) {
 						em = sys.emission;
 						em.enabled = true;
@@ -218,13 +225,13 @@ public class Testplayer : MonoBehaviour {
     {
         if(gm.gameStarted)
         {
-            if(!isAttached)
+            if(!hasAsteroid)
             {
                 Move();
             }
             else
             {
-    			maxSpeed = 4 - currentAsteroid.currentScale/2;
+    			maxForwardSpeed = 4 - currentAsteroid.currentScale/2;
     			Move();
             }
         }
@@ -241,7 +248,7 @@ public class Testplayer : MonoBehaviour {
         }
     }
 
-	void Detach()
+	void DetachAsteroid()
     {
 		
 		currentAsteroid.Detach ();
@@ -255,36 +262,39 @@ public class Testplayer : MonoBehaviour {
     void BoostCooldown()
     {
         
-        if(p == player.Player1)
+        if(player == playerRef.Player1)
         {
             gm.catCoolDown.fillAmount = 0;
             gm.dogNeedsCoolDown = true;
         }
-        else if(p == player.Player2)
+        else if(player == playerRef.Player2)
         {
             gm.dogCoolDown.fillAmount = 0;
             gm.catNeedsCoolDown = true;
         }
 
     }
-	public void Revert(){
-        Debug.Log("Reverting");
-		maxSpeed = 6;
+	public void Revert()
+    {
+		maxForwardSpeed = 6.9f;
+        maxBackwardSpeed = 2.1f;
 		rb2D.mass = 1;
-		isAttached = false;
+		hasAsteroid = false;
 		currentAsteroid = null;
         isMining = false;
 	}
 
 	void Move()
 	{
-		//Friction
-		if (rb2D.velocity.magnitude > driftSpeed)
+        currentSpeed = rb2D.velocity.magnitude;
+
+        // Check To Apply Drift
+        if (currentSpeed > driftCheckSpeed) 
         {
+            // Apply friction
 			Vector3 easeVelocity = rb2D.velocity;
-			easeVelocity.y *= .99f;
-			easeVelocity.z = 0.0f;
-			easeVelocity.x *= .99f;
+			easeVelocity.y *= driftAmount;
+			easeVelocity.x *= driftAmount;
 			rb2D.velocity = easeVelocity; 
 		}
 
@@ -294,56 +304,66 @@ public class Testplayer : MonoBehaviour {
 
 		transform.eulerAngles = keepRot;
 
-		currentSpeed = rb2D.velocity.magnitude;
-
 		float verticalAxis;
 
 		// Vertical axis for this player
-		if (p == player.XPlayer1 || p == player.XPlayer2) {
-			Debug.Log ("Getting Input");
-			verticalAxis = Input.GetAxis(playerVerticalPos[p]) - Input.GetAxis(playerVerticalNeg[p]);
-			Debug.Log ("Vertical Axis: " + verticalAxis);
-		} else{
-			string whichVerticalAxis = playerVerticalControls[p];
+        if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a conroller
+        {
+            verticalAxis = Input.GetAxis(playerVerticalPos[player]) - Input.GetAxis(playerVerticalNeg[player]); // Which direction are they going
+		} 
+        else // otherwise
+        {
+            string whichVerticalAxis = playerVerticalControls[player];
 			verticalAxis = Input.GetAxis (whichVerticalAxis);
 		}
 
-		if (verticalAxis < 0) {
-			if (currentSpeed > maxSpeed * .35f && !boost.isBoosting)
+        //Move Player
+		if (verticalAxis < 0) // If player is moving down
+        {
+			if (currentSpeed > maxBackwardSpeed && !boost.isBoosting) // If player is going over max speed
             {
-				Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * .35f);
+				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxBackwardSpeed); // Clamp player's speed
 			} 
-            else 
+            else // otherwise
             {
-				rb2D.AddForce(transform.up*verticalAxis*speed);
+				rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move Player down
 			}
 		} 
-        else if(currentSpeed > maxSpeed && verticalAxis !=0 && !boost.isBoosting)
+        else if(currentSpeed > maxForwardSpeed && verticalAxis !=0 && !boost.isBoosting) // otherwise, if player is moving up and going over max speed
         {
-			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxSpeed * 1.15f);
+			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxForwardSpeed); // Clamp player's speed
 		}
-        else
+        else // otherwise
         {
-			rb2D.AddForce(transform.up*verticalAxis*speed);
+			rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move player up
 
 		}
+            
 	}
 
 	void Rotate()
 	{
 		// Horizontal axis for this player
-		string whichHorizontalAxis = playerHorizontalControls[p];
+        string whichHorizontalAxis = playerHorizontalControls[player];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
-		if (!isAttached) {
-			transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
-		} else {
-			if (currentAsteroid.currentScale > 1) {
-				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180 / currentAsteroid.currentScale);
-			} else {
-				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180);
+		
+        if (!hasAsteroid) // If player doesn't currently have an asteroid
+        {
+			transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180); // Apply rotation
+		} 
+        else // otherwise
+        {
+			if (currentAsteroid.currentScale > 1) // If current asteroid's current scale is larger than 1
+            {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180 / currentAsteroid.currentScale); // Apply weighted rotation
+			} 
+            else // otherwise
+            {
+				transform.Rotate (0, 0, horizontalAxis * Time.deltaTime * -180); // Apply normal rotation
 			}
 		}
 	}
+
     public void PlayRandomPlayerAudio()
     {
         int randomIndex = Random.Range(0, playerSounds.Length);
@@ -352,36 +372,42 @@ public class Testplayer : MonoBehaviour {
 
         playerAudio.clip = playerSounds[randomIndex];
         playerAudio.pitch = randomPitch;
-
-
         playerAudio.Play();
     }
-	void OnCollisionEnter2D(Collision2D other){
-		if (other.gameObject.tag == "Player" && !collisionCool) {
-			Testplayer playerTemp = other.gameObject.GetComponentInParent<Testplayer> ();
-			if(playerTemp.rb2D.velocity.magnitude >= 3){
+
+	void OnCollisionEnter2D(Collision2D other)
+    {
+		if (other.gameObject.tag == "Player" && !collisionCool) // If collided with another player
+        {
+			Testplayer hitPlayer = other.gameObject.GetComponentInParent<Testplayer> (); // player hit 
+
+			if(hitPlayer.rb2D.velocity.magnitude >= 3)
+            {
+                // Spawn collision particle 
 				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.Euler(90,0,Mathf.Atan(Vector3.Distance(transform.position,other.transform.position)))) as GameObject;
 				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
 				sm.radius = 1f;
-				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;
-				StartCoroutine ("hitCool");
+				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;  
+			}
 
+            if (hitPlayer.boost.isBoosting && !detaching && hasAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
+            {
+				DetachAsteroid (); // Detach Asteroid 
 			}
-			if (playerTemp.boost.isBoosting && !detaching && isAttached) {
-				Detach ();
-				StartCoroutine ("detachCool");
-			}
+
+            StartCoroutine ("hitCool");
 		}
 	}
 
-	IEnumerator hitCool(){
+	IEnumerator hitCool()
+    {
 		collisionCool = true;
 		yield return new WaitForSeconds (.3f);
 		collisionCool = false;
 	}
 
-	IEnumerator detachCool(){
-		Debug.Log ("Running");
+	IEnumerator detachCool()
+    {
 		detaching = true;
 		yield return new WaitForSeconds (.5f);
 		detaching = false;
