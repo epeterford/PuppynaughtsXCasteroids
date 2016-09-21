@@ -46,13 +46,13 @@ public class PlayerController : MonoBehaviour {
 	public Asteroid currentAsteroid; 
 
     ParticleSystem.EmissionModule em;
-	public ParticleSystem[] rocketP;
-	public ParticleSystem[] boostP;
+	public ParticleSystem[] rocketP; // Rocket Trail Particle
+	public ParticleSystem[] boostP; // Rocket Boost Particle
+	public GameObject playerHitP; // Player Hit Particle
 
-	public GameObject playerHit;
     public GameObject PointTextPrefab;
-	bool collisionCool;
-    bool detaching;
+    bool playerHitLock = false;
+    bool detaching = false;
  
     public AudioSource playerAudio; 
     public AudioSource rocketSound;
@@ -69,9 +69,6 @@ public class PlayerController : MonoBehaviour {
         am = FindObjectOfType<AudioManager>();
         gm = FindObjectOfType<GameManager>();
         rb2D = GetComponent<Rigidbody2D> ();
-
-		collisionCool = false;
-		detaching = false;
 
 		attachSpeed = 5f;
 
@@ -98,7 +95,7 @@ public class PlayerController : MonoBehaviour {
         playerDetach.Add (playerRef.Player2, "P2 Detach");
         playerHorizontalControls.Add (playerRef.XPlayer1, "P1 XBOX Hori");
         playerHorizontalControls.Add (playerRef.XPlayer2, "P2 XBOX Hori");
-        playerVerticalPos.Add (playerRef.XPlayer1, "P1 R Trigger");
+        playerVerticalPos.Add (playerRef.XPlayer1,  "P1 R Trigger");
         playerVerticalPos.Add (playerRef.XPlayer2, "P2 R Trigger");
         playerVerticalNeg.Add (playerRef.XPlayer1, "P1 L Trigger");
         playerVerticalNeg.Add (playerRef.XPlayer2, "P2 L Trigger");
@@ -168,37 +165,8 @@ public class PlayerController : MonoBehaviour {
                 isBoosting = false;
             }
 
-            if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a controller
-            {
-                if ((Input.GetAxis (playerVerticalPos [player]) > .01 && !currentAsteroid && !isBoosting)) // If Player is moving up and isn't boosting or has an asteroid
-                {
-                    SpawnRocketParticles(rocketP);
-					
-				} 
-                else // otherwise
-                {
-                    StopRocketParticles(rocketP);
-				}
-			} 
-            else // otherwise, if Player is using a keyboard
-            {
-                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !currentAsteroid && !isBoosting)// If Player is moving up and isn't boosting or has an asteroid
-                {
-                    SpawnRocketParticles(rocketP);
-				} 
-                else // otherwise
-                {
-                    StopRocketParticles(rocketP);
-				}
-			}
-			if (isBoosting) // If Player is boosting
-            {
-                SpawnRocketParticles(boostP);
-			} 
-            else // otherwise
-            {
-                StopRocketParticles(boostP);
-			}
+            ParticleManager();
+           
         }	
 	}
 
@@ -209,10 +177,11 @@ public class PlayerController : MonoBehaviour {
             ApplyDrift();
             GetVerticalAxis();
 
-            if(currentAsteroid)
+            if(currentAsteroid) // If player currently has an asteroid 
             {
-                maxForwardSpeed = 4 - currentAsteroid.currentScale/2;
+                maxForwardSpeed = 4 - currentAsteroid.currentScale/2; // weigh down speed accordingly 
             }
+
             Move();
         }
 	}	
@@ -229,7 +198,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool CanGrabAsteroid()
     {
-        if(currentSpeed < attachSpeed && !currentAsteroid && detaching!= true )
+        if(currentSpeed < attachSpeed && !currentAsteroid && !detaching)
         {
             return true;
         }
@@ -239,6 +208,40 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void ParticleManager()
+    {
+        if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a controller
+        {
+            if ((Input.GetAxis (playerVerticalPos [player]) > .01 && !currentAsteroid && !isBoosting)) // If Player is moving up and isn't boosting or has an asteroid
+            {
+                SpawnRocketParticles(rocketP);
+
+            } 
+            else // otherwise
+            {
+                StopRocketParticles(rocketP);
+            }
+        } 
+        else // otherwise, if Player is using a keyboard
+        {
+            if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !currentAsteroid && !isBoosting)// If Player is moving up and isn't boosting or has an asteroid
+            {
+                SpawnRocketParticles(rocketP);
+            } 
+            else // otherwise
+            {
+                StopRocketParticles(rocketP);
+            }
+        }
+        if (isBoosting) // If Player is boosting
+        {
+            SpawnRocketParticles(boostP);
+        } 
+        else // otherwise
+        {
+            StopRocketParticles(boostP);
+        }
+    }
     void SpawnRocketParticles(ParticleSystem[] ps)
     {
         // Play Rocket Trail particles
@@ -275,9 +278,9 @@ public class PlayerController : MonoBehaviour {
 	void DetachAsteroid()
     {
 		currentAsteroid.Detach ();
-		currentAsteroid.rb2D.AddForce (-10*(currentAsteroid.currentScale/2)*transform.up);
+		currentAsteroid.rb2D.AddForce (-50*(currentAsteroid.currentScale/2)*transform.up);
 		rb2D.AddForce (10 * transform.up);
-		StartCoroutine ("detachCool");
+		StartCoroutine ("DetachCool");
 		Revert ();
 	}
 
@@ -384,28 +387,30 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D other)
     {
-		if (other.gameObject.tag == "Player" && !collisionCool) // If collided with another player
+		if (other.gameObject.tag == "Player" && !playerHitLock) // If collided with another player and 
         {
-			PlayerController hitPlayer = other.gameObject.GetComponentInParent<PlayerController> (); // player hit 
-
-			if(hitPlayer.rb2D.velocity.magnitude >= 3)
-            {
-                // Spawn collision particle 
-				GameObject ps = Instantiate (playerHit, other.contacts[0].point, Quaternion.Euler(90,0,Mathf.Atan(Vector3.Distance(transform.position,other.transform.position)))) as GameObject;
-				ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
-				sm.radius = 1f;
-				ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;  
-
-                StartCoroutine ("hitCool");
-			}
-
-            if (hitPlayer.isBoosting && !detaching && currentAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
-            {
-				DetachAsteroid (); // Detach Asteroid 
-			}
+            PlayerHit(other.gameObject.GetComponentInParent<PlayerController>(), other);
 		}
 	}
 
+    void PlayerHit(PlayerController hitPlayer, Collision2D collSpot)
+    {
+        if(hitPlayer.rb2D.velocity.magnitude >= 3)
+        {
+            // Spawn collision particle 
+            GameObject ps = Instantiate (playerHitP, collSpot.contacts[0].point, Quaternion.Euler(90,0,Mathf.Atan(Vector3.Distance(transform.position,collSpot.transform.position)))) as GameObject;
+            ParticleSystem.ShapeModule sm = ps.GetComponent<ParticleSystem> ().shape;
+            sm.radius = 1f;
+            ParticleSystem.EmissionModule em = ps.GetComponent<ParticleSystem> ().emission;  
+
+            StartCoroutine ("PlayerHitCool");
+        }
+
+        if (hitPlayer.isBoosting && currentAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
+        {
+            DetachAsteroid (); // Detach Asteroid 
+        }
+    }
     void ApplyDrift()
     {
         // Check To Apply Drift
@@ -419,14 +424,14 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-	IEnumerator hitCool()
+	IEnumerator PlayerHitCool()
     {
-		collisionCool = true;
+		playerHitLock = true;
 		yield return new WaitForSeconds (.3f);
-		collisionCool = false;
+		playerHitLock = false;
 	}
 
-	IEnumerator detachCool()
+	IEnumerator DetachCool()
     {
 		detaching = true;
 		yield return new WaitForSeconds (.5f);
