@@ -44,8 +44,7 @@ public class PlayerController : MonoBehaviour {
     bool isMining = false;
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
-   
-    ParticleSystem.EmissionModule em;
+
 	public ParticleSystem[] rocketP;
 	public ParticleSystem[] boostP;
 
@@ -212,7 +211,6 @@ public class PlayerController : MonoBehaviour {
             {
                 maxForwardSpeed = 4 - currentAsteroid.currentScale/2;
             }
-
             Move();
         }
 	}	
@@ -241,6 +239,8 @@ public class PlayerController : MonoBehaviour {
 
     void SpawnRocketParticles(ParticleSystem[] ps)
     {
+        ParticleSystem.EmissionModule em;
+        Debug.Log("Playing particles");
         // Play Rocket Trail particles
         foreach (ParticleSystem sys in ps) 
         {
@@ -255,6 +255,8 @@ public class PlayerController : MonoBehaviour {
 
     void StopRocketParticles(ParticleSystem[] ps)
     {
+        ParticleSystem.EmissionModule em;
+        Debug.Log("Stopping Particles");
         // Play Rocket Trail particles
         foreach (ParticleSystem sys in ps) 
         {
