@@ -29,41 +29,45 @@ public class PlayerController : MonoBehaviour {
     float currentSpeed; // Player's current speed
     float maxForwardSpeed = 6.9f; // Max speed player can reach when not boosting and moving forward
     float maxBackwardSpeed = 2.1f; // Max speed player can reach when not boosting and moving backward
+   
     float driftCheckSpeed = 1; // The speed to check if the player should be drifting
     float driftAmount = .99f; // Drift to apply to player when they reach a certain speed
 
 	float attachSpeed;
-   
-	bool isBoosting = false;
+
+    float maxBoost = 25;
+    float timeSinceBoost = 0; 
+    bool isBoosting = false;
+
+    float verticalAxis;
+
     bool isMining = false;
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
-
-	public ParticleSystem[] rocket;
+   
+    ParticleSystem.EmissionModule em;
+	public ParticleSystem[] rocketP;
 	public ParticleSystem[] boostP;
 
 	public GameObject playerHit;
     public GameObject PointTextPrefab;
 	bool collisionCool;
     bool detaching;
-
-	Boost boost;
-
  
     public AudioSource playerAudio; 
     public AudioSource rocketSound;
     public AudioClip[] playerSounds; 
     public float lowPitchRange = .95f;
     public float highPitchRange = 1.05f;
-	// Use this for initialization
 
-	public AudioManager am;
+    public AudioManager am;
+
+
 
 	void Start () 
     {
         am = FindObjectOfType<AudioManager>();
         gm = FindObjectOfType<GameManager>();
-        boost = GetComponent<Boost> ();
         rb2D = GetComponent<Rigidbody2D> ();
 
 		collisionCool = false;
@@ -75,19 +79,8 @@ public class PlayerController : MonoBehaviour {
 
         SetUpPlayerControls();
 
-		ParticleSystem.EmissionModule em;
-
-		foreach (ParticleSystem sys in rocket) 
-        {
-			em = sys.emission;
-			em.enabled = false;
-		}
-
-		foreach (ParticleSystem sys in boostP) 
-        {
-			em = sys.emission;
-			em.enabled = false;
-		}
+        StopRocketParticles(rocketP);
+        StopRocketParticles(boostP);
 
 	}
 	
@@ -145,6 +138,7 @@ public class PlayerController : MonoBehaviour {
             
         if(gm.gameStarted)
         {
+            currentSpeed = rb2D.velocity.magnitude;
 
 			Rotate();
 
@@ -157,99 +151,52 @@ public class PlayerController : MonoBehaviour {
             // Boost Button
             if (Input.GetButtonDown (playerBoost [player]) && !currentAsteroid)
             {
-				boost.ShipBoost ();       
+                Boost();       
 			}
 
-
             string whichMine = playerMine[player];
-
             // Mine Button
             if(Input.GetButtonDown(whichMine) && currentAsteroid && !isMining)
             {
                 Mine();
             }
 
-			ParticleSystem.EmissionModule em;
+            timeSinceBoost += Time.deltaTime;
+            if (timeSinceBoost > 1f) 
+            {
+                isBoosting = false;
+            }
+
             if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a controller
             {
                 if ((Input.GetAxis (playerVerticalPos [player]) > .01 && !currentAsteroid && !isBoosting)) // If Player is moving up and isn't boosting or has an asteroid
                 {
-                    // Play Rocket Trail particles
-					foreach (ParticleSystem sys in rocket)
-                    {
-						em = sys.emission;
-						em.enabled = true;
-
-					}
-					if (!rocketSound.isPlaying) // If Rocket Trail Sound isn't playing
-                    {
-						rocketSound.Play (); // Play Rocket Trail Sound
-					}
+                    SpawnRocketParticles(rocketP);
+					
 				} 
                 else // otherwise
                 {
-                    // Stop playing Rocket Trail particles
-					foreach (ParticleSystem sys in rocket) 
-                    {
-						em = sys.emission;
-						em.enabled = false;
-					}
-					rocketSound.Stop(); // Stop Rocket Trail Sound
+                    StopRocketParticles(rocketP);
 				}
 			} 
             else // otherwise, if Player is using a keyboard
             {
-                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !currentAsteroid && !boost.isBoosting)// If Player is moving up and isn't boosting or has an asteroid
+                if (Mathf.Abs (Input.GetAxis (playerVerticalControls [player])) > .01 && !currentAsteroid && !isBoosting)// If Player is moving up and isn't boosting or has an asteroid
                 {
-                    // Play Rocket Trail particles
-					foreach (ParticleSystem sys in rocket) 
-                    {
-						em = sys.emission;
-						em.enabled = true;
-
-					}
-					if (!rocketSound.isPlaying) // If Rocket Trail Sound isn't playing
-                    {
-						rocketSound.Play (); // Play Rocket Trail Sound
-					}
+                    SpawnRocketParticles(rocketP);
 				} 
                 else // otherwise
                 {
-                    // Stop playing Rocket Trail particles
-					foreach (ParticleSystem sys in rocket) 
-                    {
-						em = sys.emission;
-						em.enabled = false;
-
-					}
-					rocketSound.Stop(); // Stop Rocket Trail sound
+                    StopRocketParticles(rocketP);
 				}
 			}
-
-
-			if (boost.isBoosting) // If Player is boosting
+			if (isBoosting) // If Player is boosting
             {
-                // Play Rocket Trail particles
-				foreach (ParticleSystem sys in boostP)
-                {
-					em = sys.emission;
-					em.enabled = true;
-
-				}
-
-				if (!rocketSound.isPlaying) // If Rocket Trail sound isn't palying
-                {
-					rocketSound.Play (); // Play Rocket Trail sound
-				}
+                SpawnRocketParticles(boostP);
 			} 
             else // otherwise
             {
-                // Stop Playing Rocket Trail Particles
-				foreach (ParticleSystem sys in boostP) 
-                {
-					em = sys.emission;
-					em.enabled = false;
-				}
+                StopRocketParticles(boostP);
 			}
         }	
 	}
@@ -258,17 +205,16 @@ public class PlayerController : MonoBehaviour {
     {
         if(gm.gameStarted)
         {
-            if(!currentAsteroid)
-            {
-                Move();
-            }
-            else
-            {
-    			maxForwardSpeed = 4 - currentAsteroid.currentScale/2;
-    			Move();
-            }
-        }
+            ApplyDrift();
+            GetVerticalAxis();
 
+            if(currentAsteroid)
+            {
+                maxForwardSpeed = 4 - currentAsteroid.currentScale/2;
+            }
+
+            Move();
+        }
 	}	
 
     void Mine()
@@ -291,7 +237,31 @@ public class PlayerController : MonoBehaviour {
         {
             return false;
         }
+    }
 
+    void SpawnRocketParticles(ParticleSystem[] ps)
+    {
+        // Play Rocket Trail particles
+        foreach (ParticleSystem sys in ps) 
+        {
+            em = sys.emission;
+            em.enabled = true;
+        }
+        if (!rocketSound.isPlaying) // If Rocket Trail Sound isn't playing
+        {
+            rocketSound.Play (); // Play Rocket Trail Sound
+        }
+    }
+
+    void StopRocketParticles(ParticleSystem[] ps)
+    {
+        // Play Rocket Trail particles
+        foreach (ParticleSystem sys in ps) 
+        {
+            em = sys.emission;
+            em.enabled = false;
+        }
+        rocketSound.Stop();
     }
 
     public void AsteroidGrabbed(Asteroid asteroid)
@@ -304,14 +274,21 @@ public class PlayerController : MonoBehaviour {
 
 	void DetachAsteroid()
     {
-		
 		currentAsteroid.Detach ();
 		currentAsteroid.rb2D.AddForce (-10*(currentAsteroid.currentScale/2)*transform.up);
 		rb2D.AddForce (10 * transform.up);
 		StartCoroutine ("detachCool");
 		Revert ();
-
 	}
+
+    void Boost()
+    {
+        if(timeSinceBoost > 3)
+        {
+            timeSinceBoost = 0;
+            isBoosting = true;
+        }
+    }
 
 	public void Revert()
     {
@@ -322,56 +299,57 @@ public class PlayerController : MonoBehaviour {
         isMining = false;
 	}
 
-	void Move()
-	{
-        currentSpeed = rb2D.velocity.magnitude;
-
-        ApplyDrift();
-
-		Vector3 keepRot = transform.eulerAngles;
-
-
-		transform.eulerAngles = keepRot;
-
-		float verticalAxis;
-
-		// Vertical axis for this player
+    void GetVerticalAxis()
+    {
+        // Vertical axis for this player
         if (player == playerRef.XPlayer1 || player == playerRef.XPlayer2) // If Player is using a conroller
         {
             verticalAxis = Input.GetAxis(playerVerticalPos[player]) - Input.GetAxis(playerVerticalNeg[player]); // Which direction are they going
-		} 
+        } 
         else // otherwise
         {
             string whichVerticalAxis = playerVerticalControls[player];
-			verticalAxis = Input.GetAxis (whichVerticalAxis);
-		}
+            verticalAxis = Input.GetAxis (whichVerticalAxis);
+        }
+    }
 
-        //Move Player
-		if (verticalAxis < 0) // If player is moving down
+	void Move()
+	{
+        if(!isBoosting)
         {
-			if (currentSpeed > maxBackwardSpeed && !boost.isBoosting) // If player is going over max speed
+            //Move Player
+    		if (verticalAxis < 0) // If player is moving down
             {
-				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxBackwardSpeed); // Clamp player's speed
-			} 
+    			if (currentSpeed > maxBackwardSpeed) // If player is going over max speed
+                {
+    				rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxBackwardSpeed); // Clamp player's speed
+    			} 
+                else // otherwise
+                {
+    				rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move Player down
+    			}
+    		} 
+            else if(currentSpeed > maxForwardSpeed && verticalAxis !=0) // otherwise, if player is moving up and going over max speed
+            {
+    			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxForwardSpeed); // Clamp player's speed
+    		}
             else // otherwise
             {
-				rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move Player down
-			}
-		} 
-        else if(currentSpeed > maxForwardSpeed && verticalAxis !=0 && !boost.isBoosting) // otherwise, if player is moving up and going over max speed
-        {
-			rb2D.velocity = Vector2.ClampMagnitude (rb2D.velocity, maxForwardSpeed); // Clamp player's speed
-		}
-        else // otherwise
-        {
-			rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move player up
+    			rb2D.AddForce(transform.up*verticalAxis*playerSpeed); // Move player up
 
-		}
-            
+    		}
+        }
+        else
+        {
+            rb2D.velocity = new Vector2((maxBoost/Mathf.Pow(1+timeSinceBoost,2))*transform.up.x,(maxBoost/Mathf.Pow(1+timeSinceBoost,2))*transform.up.y);
+        }
 	}
 
 	void Rotate()
 	{
+        Vector3 keepRot = transform.eulerAngles;
+        transform.eulerAngles = keepRot;
+
 		// Horizontal axis for this player
         string whichHorizontalAxis = playerHorizontalControls[player];
 		float horizontalAxis = Input.GetAxis (whichHorizontalAxis);
@@ -421,12 +399,10 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine ("hitCool");
 			}
 
-            if (hitPlayer.boost.isBoosting && !detaching && currentAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
+            if (hitPlayer.isBoosting && !detaching && currentAsteroid) // If player that was hit was boosting, and this player currently has an asteroid
             {
 				DetachAsteroid (); // Detach Asteroid 
 			}
-
-
 		}
 	}
 
@@ -441,7 +417,6 @@ public class PlayerController : MonoBehaviour {
             easeVelocity.x *= driftAmount;
             rb2D.velocity = easeVelocity; 
         }
-
     }
 
 	IEnumerator hitCool()
