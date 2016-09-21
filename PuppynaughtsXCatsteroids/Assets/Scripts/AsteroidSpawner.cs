@@ -48,7 +48,6 @@ public class AsteroidSpawner : MonoBehaviour {
     }
 	void SpawnAsteroid()
     {
-        Debug.Log("Spawning Asteroid");
 		Vector3 spawnPos = (Random.Range (0f, 1f) > .5f) ? new Vector3 (1, Random.Range (0f, 1f), 0) : new Vector3 (Random.Range (0f, 1f), 1, 0);
 		if (Random.Range (0f, 1f) > .5f) 
         {
@@ -61,12 +60,11 @@ public class AsteroidSpawner : MonoBehaviour {
 		if (rock.transform.position.x < 0) 
         {
 			rock.transform.eulerAngles = new Vector3 (rock.transform.eulerAngles.x, rock.transform.eulerAngles.y, Mathf.Rad2Deg * Mathf.Atan (rock.transform.position.y / rock.transform.position.x) - 90);
-		} else
+		} 
+        else
         {
 			rock.transform.eulerAngles = new Vector3 (rock.transform.eulerAngles.x, rock.transform.eulerAngles.y, Mathf.Rad2Deg * Mathf.Atan (rock.transform.position.y / rock.transform.position.x) + 90);
-
 		}
-
 		rock.GetComponent<Asteroid>().mom = GetComponent<AsteroidSpawner>();
 
 		rock.transform.eulerAngles += new Vector3 (0, 0, Random.Range (-20, 20));
