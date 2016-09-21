@@ -3,65 +3,66 @@ using System.Collections;
 
 public class AsteroidSpawner : MonoBehaviour {
 
-	public float maxNum;
-	public float currentNum;
-	float timer;
+	float maxNum = 12; // Max number of asteroids allowed at one time
+	public float currentNum = 0; // Current number of asteroids on the field
+	float timer = 1;
 	bool readySpawn;
 	float spawnRadius;
-
-	bool full;
-
+    bool spawningAsteroid = true;
 	public GameObject[] asteroid;
 
 	// Use this for initialization
-	void Start () {
-		timer = 1;
-		StartCoroutine ("spawnTimer");
-		maxNum = 12;
-		currentNum = 0;
+	void Start () 
+    {
+        currentNum = 0;
+		StartCoroutine ("SpawnTimer");
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if(currentNum >= maxNum){
-			full = true;
-		}
-		if(currentNum < maxNum && full){
-			StartCoroutine("spawnTimer");
-			full = false;
-		}
+	void Update () 
+    {
+        Debug.Log("Current # of Asteroids: " + currentNum.ToString());
+
+        if(! IsFieldFull() && !spawningAsteroid )
+        {
+            StartCoroutine("SpawnTimer");
+        }
 			
 	}
 
-	IEnumerator spawnTimer(){
+	IEnumerator SpawnTimer()
+    {
+        spawningAsteroid = true;
 		yield return new WaitForSeconds (timer);
 
 		timer = Random.Range (5, 10);
 
-		spawn();
-
-		if (!full) {
-			StartCoroutine ("spawnTimer");
-		}
+		SpawnAsteroid();
+        spawningAsteroid = false;
 	}
 
-	void spawn(){
+    bool IsFieldFull()
+    {
+        return currentNum>=maxNum; 
 
-		Debug.Log ("Spawning asteroid");
-
+    }
+	void SpawnAsteroid()
+    {
+        Debug.Log("Spawning Asteroid");
 		Vector3 spawnPos = (Random.Range (0f, 1f) > .5f) ? new Vector3 (1, Random.Range (0f, 1f), 0) : new Vector3 (Random.Range (0f, 1f), 1, 0);
-		if (Random.Range (0f, 1f) > .5f) {
+		if (Random.Range (0f, 1f) > .5f) 
+        {
 			spawnPos = (Random.Range (0f, 1f) > .5f) ? new Vector3 (0, Random.Range (0f, 1f), 0) : new Vector3 (Random.Range (0f, 1f), 0, 0);
 		}
 		spawnPos = Camera.main.ViewportToWorldPoint (spawnPos);
 
 		GameObject rock = Instantiate (asteroid[Random.Range(0,asteroid.Length)], new Vector3(spawnPos.x,spawnPos.y,0), Quaternion.identity) as GameObject;
 
-		//Vector3 target = new Vector3 (0, 0, 0);
-		//rock.transform.LookAt (target);
-		if (rock.transform.position.x < 0) {
+		if (rock.transform.position.x < 0) 
+        {
 			rock.transform.eulerAngles = new Vector3 (rock.transform.eulerAngles.x, rock.transform.eulerAngles.y, Mathf.Rad2Deg * Mathf.Atan (rock.transform.position.y / rock.transform.position.x) - 90);
-		} else {
+		} else
+        {
 			rock.transform.eulerAngles = new Vector3 (rock.transform.eulerAngles.x, rock.transform.eulerAngles.y, Mathf.Rad2Deg * Mathf.Atan (rock.transform.position.y / rock.transform.position.x) + 90);
 
 		}
@@ -71,8 +72,6 @@ public class AsteroidSpawner : MonoBehaviour {
 		rock.transform.eulerAngles += new Vector3 (0, 0, Random.Range (-20, 20));
 
 		currentNum++;
-
-
 	}
 
 }
