@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour {
 	public Rigidbody2D rb2D;
 	public Asteroid currentAsteroid; 
 
+    ParticleSystem.EmissionModule em;
 	public ParticleSystem[] rocketP;
 	public ParticleSystem[] boostP;
 
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour {
         playerTaunt.Add (playerRef.Player1, "P1 Taunt");
         playerTaunt.Add (playerRef.Player2, "P2 Taunt");
     }
+
     public void InitPointText(string text)
     {
         GameObject temp = Instantiate(PointTextPrefab) as GameObject;
@@ -239,8 +241,6 @@ public class PlayerController : MonoBehaviour {
 
     void SpawnRocketParticles(ParticleSystem[] ps)
     {
-        ParticleSystem.EmissionModule em;
-        Debug.Log("Playing particles");
         // Play Rocket Trail particles
         foreach (ParticleSystem sys in ps) 
         {
@@ -255,8 +255,6 @@ public class PlayerController : MonoBehaviour {
 
     void StopRocketParticles(ParticleSystem[] ps)
     {
-        ParticleSystem.EmissionModule em;
-        Debug.Log("Stopping Particles");
         // Play Rocket Trail particles
         foreach (ParticleSystem sys in ps) 
         {

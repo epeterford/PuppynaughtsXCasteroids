@@ -36,8 +36,8 @@ public class EndGameManager : MonoBehaviour {
         CatScoreText.gameObject.SetActive(false);
         DogScoreText.gameObject.SetActive(false);
 
-        CatScoreText.text = PlayerPrefs.GetFloat("CatScore").ToString();
-        DogScoreText.text = PlayerPrefs.GetFloat("DogScore").ToString();
+        CatScoreText.text = PlayerPrefs.GetFloat("CatScore").ToString("F2");
+        DogScoreText.text = PlayerPrefs.GetFloat("DogScore").ToString("F2");
 
         // If Common Goal Met
         if(PlayerPrefs.GetInt("CommonGoal")==1)
@@ -87,7 +87,6 @@ public class EndGameManager : MonoBehaviour {
             madCat.gameObject.SetActive(false);
             happyDog.gameObject.SetActive(true);
             madDog.gameObject.SetActive(false);
-
         }
 
         fillScoreBars = true;
